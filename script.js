@@ -1,9 +1,51 @@
+//https://github.com/web-push-libs/web-push-php
+
 if ('serviceWorker' in navigator){
     navigator.serviceWorker.register("/sw.js").then(function(registration){
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
     }, function(){
         console.log('ServiceWorker registration failed: ', err);
     });
+}
+
+const makeSubscription = function() {
+    if ('serviceWorker' in navigator){
+        let swRegistration;
+        navigator.serviceWorker.ready.then(function(swReg){
+            swRegistration = swReg;
+            return swReg.pushManager.getSubscription();
+        }).then(function(subscription){
+            if (subscription == null){
+                const vapidPublicKey = "BHIUqJSS5QsMpsejoLImn-iGeoHKvJ_MD_QvWQZsOdMoOuG7hxDeqXr8NKAUjVFSXEJkJrGKCzuNi528Ox0GSz0";
+                const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+                console.log(convertedVapidKey);
+
+                return swRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: convertedVapidKey
+                });
+            } else {
+                // already subscribed
+            }
+        }).then(function(subscription){
+            console.log(subscription);
+            fetch('https://push-subscriptions.firebaseio.com/subscriptions.json', {
+                method: 'post',
+                headers: {
+                  'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                  subscription: subscription
+                }),
+            }).then(function(response){
+                if (response.ok)
+                    showNotification();
+            }).catch(function(error){
+                console.log(error);
+            });
+        });
+    }
 }
 
 const showNotification = function (){
@@ -53,7 +95,8 @@ if ('Notification' in window){
             if (result !== 'granted'){
                 console.log('No Notification Permission granted');
             } else {
-                showNotification();
+                makeSubscription();
+                //showNotification();
             }
         });
 
