@@ -9,6 +9,7 @@ self.addEventListener("notificationclick", function(event){
     console.log(notification);
     console.log(action);
     if (action == 'confirm'){
+        console.log(notification.data.url);
         notification.close();
     }
 });
@@ -35,6 +36,9 @@ self.addEventListener("push", function(event){
         badge: "/images/icon.png",
         tag: "welcome-notification",
         renotify: true,
+        data: {
+            url: '/'
+        },
         actions: [
             {
                 action: "confirm",
