@@ -4,6 +4,6 @@ const router = express.Router();
 
 const notificationsController = require('../controllers/notifications');
 
-router.get('/send', notificationsController.sendNotification);
+router.post('/send', notificationsController.sendNotification);
 
 module.exports = router;

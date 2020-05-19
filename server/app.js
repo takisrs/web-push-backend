@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const config = require("./config.json");
 
@@ -21,4 +22,7 @@ const notificationsRoutes = require('./routes/notifications');
 app.use('/subscriptions', subscriptionsRoutes);
 app.use('/notifications', notificationsRoutes);
 
-app.listen(config.port);
+
+mongoose.connect('mongodb+srv://panos:panathinaikos@cluster0-0ednp.mongodb.net/push-notifications?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
+    app.listen(config.port);
+}).catch(err => console.log(err));

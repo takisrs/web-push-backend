@@ -4,6 +4,8 @@ const router = express.Router();
 
 const subscriptionsController = require('../controllers/subscriptions');
 
+router.get('/', subscriptionsController.getSubscriptions);
+
 router.post('/add', subscriptionsController.postSubscription);
 
 module.exports = router;

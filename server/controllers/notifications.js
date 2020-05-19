@@ -1,38 +1,30 @@
 const webpush = require('web-push');
 const config = require("../config.json");
 
+const subscription = require("../models/subscription");
+
 webpush.setVapidDetails(
   'mailto:'+config.email,
   config.vapidPublicKey,
   config.vapidPrivateKey
 );
 
-const MongoClient = require('mongodb').MongoClient;
-
-const uri = "mongodb+srv://panos:panathinaikos@cluster0-0ednp.mongodb.net/push-notifications?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 exports.sendNotification = (req, res, next) => {
+    const title = req.body.title;
+    const message = req.body.message;
 
-    client.connect(err => {
-        if (err) throw err;
-        const subscriptions = client.db("push-notifications").collection("subscriptions");
-        subscriptions.findOne({}, (err, subscription) => {
-            if (err) throw err;
-            console.log(subscription);
-
-            webpush.sendNotification(subscription, JSON.stringify({title: "Hi!", message: "Hello from Node Js"})).then(result => {
+    subscription.find().then(subscriptions => {
+        subscriptions.forEach(sub => {
+            webpush.sendNotification(sub, JSON.stringify({title: title, message: message})).then(result => {
                 console.log(result);
                 res.status(201).json({
-                    message: 'Notification send!',
-                    data: {}
+                    message: 'Notification send to '+ subscriptions.length +' subscribers!',
+                    data: {title, message}
                 });
             }).catch(err => {
-                console.log(err);
+                throw err;
             });
-            client.close();
-        });
+        })
     });
-
-
 };
