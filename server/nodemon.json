@@ -1,0 +1,11 @@
+{
+    "env": {
+        "PORT": 3000,
+        "WEBPUSH_VAPID_PRIVATE_KEY": "BkO0aeKo2_6dsZr9M0K2Bxu2I04aQ5nNpXe8V4lyzbs",
+        "WEBPUSH_VAPID_PUBLIC_KEY": "BFHNL4huwkB2w7GnobFm4-3XpQEIOBFicySNAJ-M-P3ij4xhbrM7BXMyqo27ebCel5Bk7vgRmSS0dHKuGdJiiQE",
+        "WEBPUSH_VAPID_EMAIL": "takispadaz@gmail.com",
+        "MONGODB_USER": "panos",
+        "MONGODB_PASSWORD": "panathinaikos",
+        "MONGODB_DATABASE": "push-notifications"
+    }
+}

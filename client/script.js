@@ -1,4 +1,6 @@
 //https://github.com/web-push-libs/web-push-php
+const VAPID_PUBLIC_KEY = "BFHNL4huwkB2w7GnobFm4-3XpQEIOBFicySNAJ-M-P3ij4xhbrM7BXMyqo27ebCel5Bk7vgRmSS0dHKuGdJiiQE";
+
 
 if ('serviceWorker' in navigator){
     navigator.serviceWorker.register("/sw.js").then(function(registration){
@@ -16,16 +18,14 @@ const makeSubscription = function() {
             return swReg.pushManager.getSubscription();
         }).then(function(subscription){
             if (subscription == null){
-                const vapidPublicKey = "BFHNL4huwkB2w7GnobFm4-3XpQEIOBFicySNAJ-M-P3ij4xhbrM7BXMyqo27ebCel5Bk7vgRmSS0dHKuGdJiiQE";
-                const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
-
-                console.log(convertedVapidKey);
+                const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
 
                 return swRegistration.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: convertedVapidKey
                 });
             } else {
+                console.log(subscription);
                 // already subscribed
             }
         }).then(function(subscription){

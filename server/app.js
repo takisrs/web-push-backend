@@ -5,8 +5,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const config = require("./config.json");
-
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -23,6 +21,6 @@ app.use('/subscriptions', subscriptionsRoutes);
 app.use('/notifications', notificationsRoutes);
 
 
-mongoose.connect('mongodb+srv://panos:panathinaikos@cluster0-0ednp.mongodb.net/push-notifications?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
-    app.listen(config.port);
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-0ednp.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
+    app.listen(process.env.PORT || 3000);
 }).catch(err => console.log(err));

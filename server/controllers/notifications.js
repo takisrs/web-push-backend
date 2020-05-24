@@ -1,30 +1,91 @@
 const webpush = require('web-push');
-const config = require("../config.json");
+const { validationResult } = require('express-validator');
 
-const subscription = require("../models/subscription");
+const Subscription = require("../models/subscription");
+const Log = require("../models/log");
 
 webpush.setVapidDetails(
-  'mailto:'+config.email,
-  config.vapidPublicKey,
-  config.vapidPrivateKey
+  'mailto:'+process.env.WEBPUSH_VAPID_EMAIL,
+  process.env.WEBPUSH_VAPID_PUBLIC_KEY,
+  process.env.WEBPUSH_VAPID_PRIVATE_KEY
 );
 
+exports.sendNotification = async (req, res, next) => {
+    const errors = validationResult(req);
 
-exports.sendNotification = (req, res, next) => {
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     const title = req.body.title;
     const message = req.body.message;
+    const icon = req.body.icon;
+    const image = req.body.image;
+    const dir = req.body.dir || "ltr"; // ltr, rtl
+    const lang = req.body.lang || "el-GR"; //BCP 47, en-US
+    const vibrate = req.body.vibrate; // [100, 30, 100] vibrate, pause, vibrate
+    const silent = req.body.silent || false; // when true, don't use vibrate option (throws a TypeError)
+    const badge = req.body.badge; // 96X96
+    const tag = req.body.tag;
+    const renotify = req.body.renotify; // true, false
+    const actions = req.body.actions; // [{ action: "confirm", title: "OK", icon: "https://..." }]
+    const data = req.body.data;
 
-    subscription.find().then(subscriptions => {
-        subscriptions.forEach(sub => {
-            webpush.sendNotification(sub, JSON.stringify({title: title, message: message})).then(result => {
-                console.log(result);
-                res.status(201).json({
-                    message: 'Notification send to '+ subscriptions.length +' subscribers!',
-                    data: {title, message}
+    const notificationData = {
+        title: title, 
+        message: message,
+        icon: icon,
+        image: image,
+        dir: dir,
+        lang: lang,
+        vibrate: vibrate,
+        silent: silent,
+        badge: badge,
+        tag: tag,
+        renotify: renotify,
+        actions: actions,
+        data: data
+    };
+
+    const options = {
+        //gcmAPIKey: "",
+        timeout: 5000, // 5 sec
+        TTL: 60*60*24*4, //4 days
+        contentEncoding: "aes128gcm"
+    };
+
+    let successCounter = 0;
+    Subscription.find().then(async subscriptions => {
+        for (const sub of subscriptions){
+            await webpush.sendNotification(sub, JSON.stringify(notificationData), options).then(result => {
+                return result;
+            }).then(response => {
+                successCounter++;
+                const log = new Log({
+                    subscription: sub,
+                    notification: notificationData,
+                    response: response
                 });
-            }).catch(err => {
-                throw err;
+                return log.save();
+            }).catch(error => {
+                const log = new Log({
+                    subscription: sub,
+                    notification: notificationData,
+                    response: error
+                });
+                return log.save();
             });
-        })
+        };
+        console.log("success:", successCounter);
+        return res.status(201).json({
+            message: 'Notification send to '+ subscriptions.length +' subscribers!',
+            data: {
+                totalSubscriptions: subscriptions.length,
+                totalSent: successCounter,
+                notification: notificationData
+            }
+        });
+    }).catch(error => {
+        throw error;
     });
 };
