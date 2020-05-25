@@ -10,11 +10,14 @@ webpush.setVapidDetails(
   process.env.WEBPUSH_VAPID_PRIVATE_KEY
 );
 
-exports.sendNotification = async (req, res, next) => {
+exports.sendNotification = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        const error = new Error("Validation error occured");
+        error.statusCode = 422;
+        error.data = { errors: errors.array() };
+        throw error;
     }
 
     const title = req.body.title;
@@ -76,8 +79,9 @@ exports.sendNotification = async (req, res, next) => {
                 return log.save();
             });
         };
-        console.log("success:", successCounter);
+
         return res.status(201).json({
+            ok: true,
             message: 'Notification send to '+ subscriptions.length +' subscribers!',
             data: {
                 totalSubscriptions: subscriptions.length,
@@ -86,6 +90,6 @@ exports.sendNotification = async (req, res, next) => {
             }
         });
     }).catch(error => {
-        throw error;
+        next(error);
     });
 };

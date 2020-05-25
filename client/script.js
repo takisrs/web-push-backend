@@ -29,21 +29,24 @@ const makeSubscription = function() {
                 // already subscribed
             }
         }).then(function(subscription){
-            console.log(subscription);
-            fetch('http://localhost:3000/subscriptions/add', {
-                method: 'post',
-                headers: {
-                  'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                  subscription: subscription
-                }),
-            }).then(function(response){
-                if (response.ok)
-                    showNotification();
-            }).catch(function(error){
-                console.log(error);
-            });
+            if (subscription){
+                console.log(subscription);
+                fetch('http://localhost:3000/subscriptions', {
+                    method: 'post',
+                    headers: {
+                      'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      subscription: subscription
+                    }),
+                }).then(function(response){
+                    if (response.ok)
+                        showNotification();
+                }).catch(function(error){
+                    console.log(error);
+                });
+            }
+
         });
     }
 }
