@@ -53,7 +53,7 @@ exports.sendNotification = (req, res, next) => {
     const options = {
         //gcmAPIKey: "",
         timeout: 5000, // 5 sec
-        TTL: 60*60*24*4, //4 days
+        TTL: 60*60*24*4, // 4 days
         contentEncoding: "aes128gcm"
     };
 

@@ -14,11 +14,19 @@ app.use((req, res, next) => {
     next();
 });
 
+const authRoutes = require('./routes/auth');
 const subscriptionsRoutes = require('./routes/subscriptions');
 const notificationsRoutes = require('./routes/notifications');
 
+app.use('/auth', authRoutes);
 app.use('/subscriptions', subscriptionsRoutes);
 app.use('/notifications', notificationsRoutes);
+
+
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
+    console.log(result);    
+    app.listen(process.env.PORT || 3000);
+}).catch(err => console.log(err));
 
 app.use((error, req, res, next) => {
     console.log(error);
@@ -31,7 +39,3 @@ app.use((error, req, res, next) => {
         data: errors
     })
 });
-
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-0ednp.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
-    app.listen(process.env.PORT || 3000);
-}).catch(err => console.log(err));
