@@ -24,9 +24,10 @@ app.use('/notifications', notificationsRoutes);
 
 
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
-    console.log(result);    
     app.listen(process.env.PORT || 3000);
-}).catch(err => console.log(err));
+}).catch(err => {
+    throw err;
+});
 
 app.use((error, req, res, next) => {
     console.log(error);

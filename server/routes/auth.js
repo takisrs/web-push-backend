@@ -5,10 +5,12 @@ const router = express.Router();
 
 const authController = require('../controllers/auth');
 
-router.post('/login', authController.login);
+router.post('/login', [
+    check('email').isEmail().normalizeEmail()
+], authController.login);
 
 router.post('/signup', [
-    check('email').isEmail(),
+    check('email').isEmail().normalizeEmail(),
     check('name').isLength({ min: 5 })
 ], authController.signup);
 

@@ -27,7 +27,10 @@ exports.getSubscriptions = (req, res, next) => {
 
 
 exports.postSubscription = (req, res, next) => {
-    const subscription = new Subscription(req.body.subscription);
+    const subscription = new Subscription({
+        userId: req.userId,
+        ...req.body.subscription
+    });
 
     subscription.save().then(result => {
         res.status(201).json({

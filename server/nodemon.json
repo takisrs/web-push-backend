@@ -7,6 +7,7 @@
         "MONGODB_HOST": "cluster0-0ednp.mongodb.net",
         "MONGODB_USER": "panos",
         "MONGODB_PASSWORD": "panathinaikos",
-        "MONGODB_DATABASE": "push-notifications"
+        "MONGODB_DATABASE": "push-notifications",
+        "JWT_TOKEN_SECRET": "nodejswebnotifications"
     }
 }

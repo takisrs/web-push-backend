@@ -34,7 +34,8 @@ const makeSubscription = function() {
                 fetch('http://localhost:3000/subscriptions', {
                     method: 'post',
                     headers: {
-                      'Content-type': 'application/json'
+                      'Content-type': 'application/json',
+                      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRha2lzcGFkYXpAZ21haWwuY29tIiwidXNlcklkIjoiNWY1OTMzYTg5MThkYjk3MDdkNzY1ZmIwIiwiaWF0IjoxNTk5NjgzNTc4LCJleHAiOjE1OTk2ODcxNzh9.uROzKSQGQXsPSWOLlT1kBEQEfHCoUKqyVsLnkep6xK8'
                     },
                     body: JSON.stringify({
                       subscription: subscription
