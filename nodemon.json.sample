@@ -1,0 +1,13 @@
+{
+    "env": {
+        "PORT": 3000,
+        "WEBPUSH_VAPID_PRIVATE_KEY": "",
+        "WEBPUSH_VAPID_PUBLIC_KEY": "",
+        "WEBPUSH_VAPID_EMAIL": "takispadaz@gmail.com",
+        "MONGODB_HOST": "cluster0-0ednp.mongodb.net",
+        "MONGODB_USER": "panos",
+        "MONGODB_PASSWORD": "password",
+        "MONGODB_DATABASE": "push-notifications",
+        "JWT_TOKEN_SECRET": "nodejswebnotifications"
+    }
+}
