@@ -13,6 +13,24 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    website: {
+        type: String,
+        required: false
+    },
+    vapidKeys: {
+        publicKey: {
+            type: String,
+            required: true
+        },
+        privateKey: {
+            type: String,
+            required: true
+        }
+    },
+    active: {
+        type: Boolean,
+        required: true
+    },
     added: { 
         type: Date, 
         default: Date.now 

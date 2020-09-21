@@ -28,7 +28,7 @@ exports.getSubscriptions = (req, res, next) => {
 
 exports.postSubscription = (req, res, next) => {
     const subscription = new Subscription({
-        userId: req.userId,
+        userId: req.user._id.toString(),
         ...req.body.subscription
     });
 

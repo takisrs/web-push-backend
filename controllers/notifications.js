@@ -4,12 +4,6 @@ const { validationResult } = require('express-validator');
 const Subscription = require("../models/subscription");
 const Log = require("../models/log");
 
-webpush.setVapidDetails(
-  'mailto:'+process.env.WEBPUSH_VAPID_EMAIL,
-  process.env.WEBPUSH_VAPID_PUBLIC_KEY,
-  process.env.WEBPUSH_VAPID_PRIVATE_KEY
-);
-
 exports.sendNotification = (req, res, next) => {
     const errors = validationResult(req);
 
@@ -19,6 +13,12 @@ exports.sendNotification = (req, res, next) => {
         error.data = { errors: errors.array() };
         throw error;
     }
+
+    webpush.setVapidDetails(
+        'mailto:'+req.user.email,
+        req.user.vapidKeys.publicKey,
+        req.user.vapidKeys.privateKey
+    );
 
     const title = req.body.title;
     const message = req.body.message;

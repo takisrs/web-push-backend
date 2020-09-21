@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const webpush = require('web-push');
 
 exports.login = (req, res, next) => {
     const errors = validationResult(req);
@@ -18,14 +19,20 @@ exports.login = (req, res, next) => {
     let loadedUser = null;
 
     User.findOne({ email: email }).then(user => {
-      if (!user) {
-        const error = new Error('A user with this email could not be found.');
-        error.statusCode = 401;
-        error.data = { email: email };
-        throw error;
-      }
-      loadedUser = user;
-      return bcrypt.compare(password, user.password);
+        if (!user) {
+            const error = new Error('A user with this email could not be found.');
+            error.statusCode = 401;
+            error.data = { email: email };
+            throw error;
+        }
+        if (!user.active){
+            const error = new Error('User is not active.');
+            error.statusCode = 401;
+            error.data = { userId: user._id.toString() };
+            throw error;  
+        }
+        loadedUser = user;
+        return bcrypt.compare(password, user.password);
     }).then(isEqual => {
         if (!isEqual) {
             const error = new Error('Wrong password!');
@@ -37,8 +44,9 @@ exports.login = (req, res, next) => {
             ok: true,
             message: "Login ok",
             data: {
+                userId: loadedUser._id.toString(),
                 token: token, 
-                userId: loadedUser._id.toString() 
+                vapidPublicKey: loadedUser.vapidKeys.publicKey
             }
         });
     }).catch(err => {
@@ -61,11 +69,17 @@ exports.signup = (req, res, next) => {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    const website = req.body.website || '';
+
+    const vapidKeys = webpush.generateVAPIDKeys();
 
     bcrypt.hash(password, 12).then(hashedPassword => {
         const user = new User({
             name: name,
             email: email,
+            website: website,
+            vapidKeys: vapidKeys,
+            active: false,
             password: hashedPassword
         });
 
@@ -73,7 +87,11 @@ exports.signup = (req, res, next) => {
             res.status(201).json({
                 ok: true,
                 message: 'Account created!',
-                data: user
+                data: {
+                    userId: user._id.toString(),
+                    email: user.email,
+                    vapidPublicKey: user.vapidKeys.publicKey
+                }
             });
         }).catch(err => {
             next(err);
