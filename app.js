@@ -16,10 +16,12 @@ app.use((req, res, next) => {
 
 const authRoutes = require('./routes/auth');
 const subscriptionsRoutes = require('./routes/subscriptions');
+const logsRoutes = require('./routes/logs');
 const notificationsRoutes = require('./routes/notifications');
 
 app.use('/auth', authRoutes);
 app.use('/subscriptions', subscriptionsRoutes);
+app.use('/logs', logsRoutes);
 app.use('/notifications', notificationsRoutes);
 
 
