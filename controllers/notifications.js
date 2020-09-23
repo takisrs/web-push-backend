@@ -30,9 +30,9 @@ exports.sendNotification = (req, res, next) => {
     const silent = req.body.silent || false; // when true, don't use vibrate option (throws a TypeError)
     const badge = req.body.badge; // 96X96
     const tag = req.body.tag;
-    const renotify = req.body.renotify; // true, false
-    const actions = req.body.actions; // [{ action: "confirm", title: "OK", icon: "https://..." }]
-    const data = req.body.data;
+    const renotify = req.body.renotify || true; // true, false
+    const actions = req.body.actions || []; // [{ action: "confirm", title: "OK", icon: "https://..." }]
+    const data = req.body.data || [];
 
     const notificationData = {
         title: title, 
