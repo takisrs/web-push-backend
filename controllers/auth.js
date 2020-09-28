@@ -45,6 +45,8 @@ exports.login = (req, res, next) => {
             message: "Login ok",
             data: {
                 userId: loadedUser._id.toString(),
+                userEmail: loadedUser.email,
+                website: loadedUser.website,
                 token: token, 
                 vapidPublicKey: loadedUser.vapidKeys.publicKey
             }

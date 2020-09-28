@@ -2,10 +2,9 @@ const Log = require('../models/log');
 
 exports.getLogs = (req, res, next) => {
     let filter = {};
-    /*if (req.query.endpoint)
-        filter = { endpoint: req.query.endpoint };
-    */
-
+    if (req.user)
+        filter = { 'subscription.userId': req.user._id };
+    
     Log.find(filter).then(logs => {
         if (logs.length > 0){
             res.status(201).json({

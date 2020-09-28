@@ -58,7 +58,7 @@ exports.sendNotification = (req, res, next) => {
     };
 
     let successCounter = 0;
-    Subscription.find().then(async subscriptions => {
+    Subscription.find({userId: req.user._id.toString()}).then(async subscriptions => {
         for (const sub of subscriptions){
             await webpush.sendNotification(sub, JSON.stringify(notificationData), options).then(result => {
                 return result;

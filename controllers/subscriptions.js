@@ -2,8 +2,12 @@ const Subscription = require('../models/subscription');
 
 exports.getSubscriptions = (req, res, next) => {
     let filter = {};
+    if (req.user)
+        filter = { userId: req.user._id.toString() };
+
     if (req.query.endpoint)
-        filter = { endpoint: req.query.endpoint };
+        filter = { endpoint: req.query.endpoint, ...filter };
+
 
     Subscription.find(filter).then(subscriptions => {
         if (subscriptions.length > 0){

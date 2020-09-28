@@ -37,4 +37,8 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.statics.emailExists = function (email, cp) {
+    this.countDocuments({email: email}).exec(cp);
+} 
+
 module.exports = mongoose.model('User', userSchema);
