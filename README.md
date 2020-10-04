@@ -6,3 +6,5 @@
 ```
 npm install && npm start
 ```
+
+API documentation to be added
