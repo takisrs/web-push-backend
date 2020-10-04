@@ -6,3 +6,5 @@
 ```
 npm install && npm start
 ```
+
+You may interact with the exposed api by using my [implementation in vue.js](https://github.com/takisrs/web-push-frontend)
