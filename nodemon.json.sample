@@ -1,7 +1,7 @@
 {
     "env": {
         "PORT": 3000,
-        "MONGODB_HOST": "cluster0-0ednp.mongodb.net",
+        "MONGODB_HOST": "cluster-demo.mongodb.net",
         "MONGODB_USER": "panos",
         "MONGODB_PASSWORD": "password",
         "MONGODB_DATABASE": "push-notifications",

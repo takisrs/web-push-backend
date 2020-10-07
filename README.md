@@ -7,8 +7,5 @@
 npm install && npm start
 ```
 
-<<<<<<< HEAD
 API documentation to be added
-=======
 You may interact with the exposed api by using my [implementation in vue.js](https://github.com/takisrs/web-push-frontend)
->>>>>>> e65195f142536677e981e821b76ec48858fc6f62
