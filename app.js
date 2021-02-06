@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 
 const app = express();
 
@@ -6,6 +7,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 app.use(bodyParser.json());
+
+app.use("/resources", express.static(path.join(__dirname, 'resources')));
 
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");

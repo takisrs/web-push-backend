@@ -1,4 +1,5 @@
 const uploadFile = require("../middleware/upload");
+var os = require("os");
 
 exports.postImage = async (req, res, next) => {
     try {
@@ -17,7 +18,10 @@ exports.postImage = async (req, res, next) => {
         res.status(200).json({ 
             ok: true,
             message: "Uploaded the file successfully: " + req.file.originalname,
-            data: req.file
+            data: {
+                ...req.file,
+                fullpath: "http://" + req.headers.host + "/" + req.file.path
+            }
         });
 
       } catch (err) {
