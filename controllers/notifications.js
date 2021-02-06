@@ -37,6 +37,7 @@ exports.postNotification = (req, res, next) => {
 
 
     const notificationData = {
+        userId: req.user._id.toString(),
         title: title, 
         message: message,
         icon: icon,
@@ -53,9 +54,9 @@ exports.postNotification = (req, res, next) => {
         scheduledAt: scheduledAt
     };
 
-    next();
+    //next();
 
-    /*
+    
     const notification = new Notification(notificationData);
 
     notification.save().then(result => {
@@ -67,7 +68,7 @@ exports.postNotification = (req, res, next) => {
     }).catch(err => {
         next(err);
     });
-    */
+    
 }
 
 exports.sendNotification = (req, res, next) => {

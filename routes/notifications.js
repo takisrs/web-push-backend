@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator");
+const { check, oneOf } = require("express-validator");
 const mongoose = require('mongoose');
 
 const isAuth = require("../middleware/is-auth");
@@ -10,7 +10,11 @@ const notificationsController = require("../controllers/notifications");
 
 router.post("/", isAuth, [
     check("title").isLength({ min: 5 }), 
-    check("message").isLength({ min: 10 })
+    check("message").isLength({ min: 10 }),
+    oneOf([
+        check("scheduledAt").isEmpty(),
+        check("scheduledAt").isDate(),
+    ], "Please provide a valid date or empty value to schedule for immediate sending")
 ], notificationsController.postNotification);
 
 router.post("/send", isAuth, [
