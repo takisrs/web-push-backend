@@ -1,0 +1,7 @@
+{
+	"Please provide a valid date or empty value to schedule for immediate sending": "Please provide a valid date or empty value to schedule for immediate sending",
+	"Title is required with a mimimun length of 5 characters": "Title is required with a mimimun length of 5 characters",
+	"Message is required with a mimimun length of 10 characters": "Message is required with a mimimun length of 10 characters",
+	"scheduledAt file shound be empty": "scheduledAt file shound be empty",
+	"scheduledAt file shound be a valid date": "scheduledAt file shound be a valid date"
+}

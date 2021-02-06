@@ -1,0 +1,8 @@
+{
+	"Please provide a valid date or empty value to schedule for immediate sending": "Παρακαλούμε δώστε με έγκυρη ημερομηνία ή αφήστε το πεδίο κενό για άμεση αποστολή",
+	"Title is required with a mimimun length of 5 characters": "Title is required with a mimimun length of 5 characters",
+	"Message is required with a mimimun length of 5 characters": "Message is required with a mimimun length of 5 characters",
+	"Message is required with a mimimun length of 10 characters": "Message is required with a mimimun length of 10 characters",
+	"scheduledAt file shound be empty": "scheduledAt file shound be empty",
+	"scheduledAt file shound be a valid date": "scheduledAt file shound be a valid date"
+}

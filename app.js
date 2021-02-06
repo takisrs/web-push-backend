@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const i18n = require('i18n')
 
 const app = express();
 
@@ -11,11 +12,25 @@ app.use(bodyParser.json());
 app.use("/resources", express.static(path.join(__dirname, 'resources')));
 
 app.use((req, res, next) => {
+	console.log(req.headers);
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, PATCH, DELETE");
 	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 	next();
 });
+
+i18n.configure({
+	locales: ['en', 'el'],
+	defaultLocale: 'en',
+	retryInDefaultLocale: true,
+	header: 'accept-language',
+	autoReload: false,
+	updateFiles: true,
+	syncFiles: true,
+	directory: path.join(__dirname, 'locales')
+});
+
+app.use(i18n.init);
 
 const authRoutes = require("./routes/auth");
 const subscriptionsRoutes = require("./routes/subscriptions");
