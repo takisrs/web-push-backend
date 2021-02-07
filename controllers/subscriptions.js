@@ -1,3 +1,5 @@
+const { __ } = require('i18n');
+
 const Subscription = require('../models/subscription');
 
 exports.getSubscriptions = (req, res, next) => {
@@ -13,13 +15,13 @@ exports.getSubscriptions = (req, res, next) => {
         if (subscriptions.length > 0){
             res.status(201).json({
                 ok: true,
-                message: 'Fetched ' + subscriptions.length + ' subscriptions',
+                message: __("Fetched %s subscriptions", subscriptions.length),
                 data: subscriptions
             });
         } else {
             res.status(404).json({
                 ok: false,
-                message: 'No subscription found',
+                message: __("No subscription found"),
                 data: subscriptions
             });
         }
@@ -39,7 +41,7 @@ exports.postSubscription = (req, res, next) => {
     subscription.save().then(result => {
         res.status(201).json({
             ok: true,
-            message: 'Subscription created successfully!',
+            message: __("Subscription created successfully!"),
             data: subscription
         });
     }).catch(err => {

@@ -1,5 +1,7 @@
+const os = require("os");
+const { __ } = require('i18n');
+
 const uploadFile = require("../middleware/upload");
-var os = require("os");
 
 exports.postImage = async (req, res, next) => {
     try {
@@ -10,14 +12,14 @@ exports.postImage = async (req, res, next) => {
         if (req.file == undefined) {
             return res.status(400).json({ 
                 ok: false,
-                message: "Please upload a file!",
+                message: __("Please upload a file!"),
                 data: []
             });
         }
     
         res.status(200).json({ 
             ok: true,
-            message: "Uploaded the file successfully: " + req.file.originalname,
+            message: __("Uploaded the file successfully: %s", req.file.originalname),
             data: {
                 ...req.file,
                 fullpath: "http://" + req.headers.host + "/" + req.file.path
@@ -27,7 +29,7 @@ exports.postImage = async (req, res, next) => {
       } catch (err) {
         res.status(500).json({
             ok: false,
-            message: `Could not upload the file`,
+            message: __("Could not upload the file"),
             data: ""
         });
     }

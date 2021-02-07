@@ -3,5 +3,11 @@
 	"Title is required with a mimimun length of 5 characters": "Title is required with a mimimun length of 5 characters",
 	"Message is required with a mimimun length of 10 characters": "Message is required with a mimimun length of 10 characters",
 	"scheduledAt file shound be empty": "scheduledAt file shound be empty",
-	"scheduledAt file shound be a valid date": "scheduledAt file shound be a valid date"
+	"scheduledAt file shound be a valid date": "scheduledAt file shound be a valid date",
+	"Validation error occured": "Validation error occured",
+	"scheduledAt field shound be empty": "scheduledAt field shound be empty",
+	"scheduledAt field shound be a valid date": "scheduledAt field shound be a valid date",
+	"Notification created successfully!": "Notification created successfully!",
+	"Notification send to %s subscribers!": "Notification send to %s subscribers!",
+	"Login ok": "Login ok"
 }

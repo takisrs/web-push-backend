@@ -1,6 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 const User = require('../models/user');
+const { __ } = require('i18n');
 
 const router = express.Router();
 
@@ -15,10 +16,10 @@ router.post('/signup', [
         return new Promise((resolve, reject) => {
             User.emailExists(value, function(err, count){
                 if (err) {
-                    reject(new Error('Server Error'));
+                    reject(new Error(__("Server Error")));
                 }
                 if (count > 0) {
-                    reject(new Error('E-mail already in use'));
+                    reject(new Error(__("E-mail already in use")));
                 }
                 resolve(true);
             });

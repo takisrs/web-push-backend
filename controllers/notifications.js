@@ -1,5 +1,6 @@
 const webpush = require('web-push');
 const { validationResult } = require('express-validator');
+const { __ } = require('i18n');
 
 const Subscription = require("../models/subscription");
 const Notification = require("../models/notification");
@@ -9,11 +10,13 @@ exports.postNotification = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        const error = new Error("Validation error occured");
+        const error = new Error(__("Validation error occured"));
         error.statusCode = 422;
         error.data = { errors: errors.array() };
         throw error;
     }
+
+    const userId = req.user._id.toString();
 
     const title = req.body.title;
     const message = req.body.message;
@@ -31,13 +34,11 @@ exports.postNotification = (req, res, next) => {
 
     let scheduledAt = new Date();
 
-    console.log(scheduledAt);
     if (req.body.scheduledAt)
         scheduledAt = req.body.scheduledAt;
-
-
-    const notificationData = {
-        userId: req.user._id.toString(),
+    
+    const notification = new Notification({
+        userId: userId,
         title: title, 
         message: message,
         icon: icon,
@@ -52,17 +53,12 @@ exports.postNotification = (req, res, next) => {
         actions: actions,
         data: data,
         scheduledAt: scheduledAt
-    };
-
-    //next();
-
-    
-    const notification = new Notification(notificationData);
+    });
 
     notification.save().then(result => {
         res.status(201).json({
             ok: true,
-            message: 'Notification created successfully!',
+            message: __('Notification created successfully!'),
             data: notification
         });
     }).catch(err => {
@@ -75,7 +71,7 @@ exports.sendNotification = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        const error = new Error("Validation error occured");
+        const error = new Error(__("Validation error occured"));
         error.statusCode = 422;
         error.data = { errors: errors.array() };
         throw error;
@@ -149,7 +145,7 @@ exports.sendNotification = (req, res, next) => {
 
         return res.status(201).json({
             ok: true,
-            message: 'Notification send to '+ subscriptions.length +' subscribers!',
+            message: __("Notification send to %s subscribers!", subscriptions.length),
             data: {
                 totalSubscriptions: subscriptions.length,
                 totalSent: successCounter,

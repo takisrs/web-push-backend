@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 app.use("/resources", express.static(path.join(__dirname, 'resources')));
 
 app.use((req, res, next) => {
-	console.log(req.headers);
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, PATCH, DELETE");
 	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -26,7 +25,7 @@ i18n.configure({
 	header: 'accept-language',
 	autoReload: false,
 	updateFiles: true,
-	syncFiles: true,
+	syncFiles: false,
 	directory: path.join(__dirname, 'locales')
 });
 

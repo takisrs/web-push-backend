@@ -4,8 +4,6 @@ const mkdirp = require("mkdirp");
 
 const maxSize = (process.env.UPLOAD_MAXSIZE || 2) * 1024 * 1024;
 
-console.log(maxSize);
-
 let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
         const dir = "resources/uploads/" + req.user._id.toString() + "/";

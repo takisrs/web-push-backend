@@ -1,3 +1,5 @@
+const { __ } = require('i18n');
+
 const Log = require('../models/log');
 
 exports.getLogs = (req, res, next) => {
@@ -9,13 +11,13 @@ exports.getLogs = (req, res, next) => {
         if (logs.length > 0){
             res.status(201).json({
                 ok: true,
-                message: 'Fetched ' + logs.length + ' logs',
+                message: __("Fetched %s logs", logs.length),
                 data: logs
             });
         } else {
             res.status(404).json({
                 ok: false,
-                message: 'No logs found',
+                message: __("No logs found"),
                 data: logs
             });
         }
