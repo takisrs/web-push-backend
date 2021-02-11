@@ -1,10 +1,16 @@
 {
     "env": {
         "PORT": 3000,
+        "TZ": "Europe/Athens",
+        "UPLOAD_MAXSIZE": 4,
         "MONGODB_HOST": "cluster-demo.mongodb.net",
         "MONGODB_USER": "panos",
         "MONGODB_PASSWORD": "password",
         "MONGODB_DATABASE": "push-notifications",
+        "SMTP_HOST": "",
+        "SMTP_PORT": 25,
+        "SMTP_USER": "",
+        "SMTP_PASSWORD": "",
         "JWT_TOKEN_SECRET": "nodejswebnotifications"
     }
 }
