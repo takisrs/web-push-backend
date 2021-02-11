@@ -37,7 +37,7 @@ const logsRoutes = require("./routes/logs");
 const notificationsRoutes = require("./routes/notifications");
 const imagesRoutes = require("./routes/images");
 const cron = require('./utils/cron');
-//cron();
+cron();
 
 app.use("/auth", authRoutes);
 app.use("/subscriptions", subscriptionsRoutes);
@@ -57,7 +57,7 @@ mongoose
 app.use((error, req, res, next) => {
 	console.log(error);
 	const status = error.statusCode || 500;
-	const message = error.message || "Error Occured";
+	const message = error.message || i18n.__("Error Occured");
 	const errors = error.data || {};
 	res.status(status).json({
 		ok: false,

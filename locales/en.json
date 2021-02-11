@@ -9,5 +9,9 @@
 	"scheduledAt field shound be a valid date": "scheduledAt field shound be a valid date",
 	"Notification created successfully!": "Notification created successfully!",
 	"Notification send to %s subscribers!": "Notification send to %s subscribers!",
-	"Login ok": "Login ok"
+	"Login ok": "Login ok",
+	"Cannot update notification sent date": "Cannot update notification sent date",
+	"Error occured": "Error occured",
+	"Notification sent to %s subscribers!": "Notification sent to %s subscribers!",
+	"Notification sent": "Notification sent"
 }

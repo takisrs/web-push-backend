@@ -52,6 +52,9 @@ const notificationSchema = new mongoose.Schema({
     scheduledAt: {
         type: Date,
         required: true
+    },
+    sentAt: {
+        type: Date
     }
 
 });
