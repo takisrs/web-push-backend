@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const config = require('../config/config');
 
 module.exports = (req, res, next) => {
     const authHeader = req.get('Authorization');
@@ -12,7 +13,7 @@ module.exports = (req, res, next) => {
     let decodedToken;
 
     try {
-        decodedToken = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
+        decodedToken = jwt.verify(token, config.JWT_TOKEN_SECRET);
     } catch (err) {
         err.statusCode = 500;
         throw err;

@@ -6,6 +6,8 @@ const Subscription = require("../models/subscription");
 const Notification = require("../models/notification");
 const Log = require("../models/log");
 
+const config = require("../config/config");
+
 exports.postNotification = (req, res, next) => {
     const errors = validationResult(req);
 
@@ -115,9 +117,9 @@ exports.sendNotification = (req, res, next) => {
 
     const options = {
         //gcmAPIKey: "",
-        timeout: 5000, // 5 sec
-        TTL: 60*60*24*4, // 4 days
-        contentEncoding: "aes128gcm"
+        timeout: config.WEBPUSH_TIMEOUT,
+        TTL: config.WEBPUSH_TTL,
+        contentEncoding: config.WEBPUSH_ENCODING
     };
 
     let successCounter = 0;

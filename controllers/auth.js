@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const webpush = require('web-push');
 const { __ } = require('i18n');
 
+const config = require('../config/config');
+
 const User = require('../models/user');
 
 exports.login = (req, res, next) => {
@@ -41,7 +43,7 @@ exports.login = (req, res, next) => {
             error.statusCode = 401;
             throw error;
         }
-        const token = jwt.sign({ email: loadedUser.email, userId: loadedUser._id.toString() }, process.env.JWT_TOKEN_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ email: loadedUser.email, userId: loadedUser._id.toString() }, config.JWT_TOKEN_SECRET, { expiresIn: '1h' });
         res.status(200).json({ 
             ok: true,
             message: __("Login ok"),

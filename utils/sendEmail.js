@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const config = require('../config/config');
 
 /**
  * Sends an email
@@ -9,18 +10,18 @@ const nodemailer = require('nodemailer');
  */
 exports.sendEmail = (to, subject, text) => {
     var transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
+        host: config.SMTP_HOST,
+        port: config.SMTP_PORT,
         secure: false, // upgrade later with STARTTLS
         ignoreTLS: true,
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD
+          user: config.SMTP_USER,
+          pass: config.SMTP_PASSWORD
         }
     });
     
     var mailOptions = {
-      from: 'takispadaz@gmail.com',
+      from: config.EMAIL_FROM,
       to: to,
       subject: subject,
       text: text

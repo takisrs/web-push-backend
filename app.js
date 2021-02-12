@@ -7,6 +7,8 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+const config = require('./config/config');
+
 app.use(bodyParser.json());
 
 app.use("/resources", express.static(path.join(__dirname, 'resources')));
@@ -19,8 +21,8 @@ app.use((req, res, next) => {
 });
 
 i18n.configure({
-	locales: ['en', 'el'],
-	defaultLocale: 'en',
+	locales: config.AVAILABLE_LOCALES,
+	defaultLocale: config.DEFAULT_LOCALE,
 	retryInDefaultLocale: true,
 	header: 'accept-language',
 	autoReload: false,
@@ -46,9 +48,9 @@ app.use("/notifications", notificationsRoutes);
 app.use("/images", imagesRoutes);
 
 mongoose
-	.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
+	.connect(`mongodb+srv://${config.MONGODB_USER}:${config.MONGODB_PASSWORD}@${config.MONGODB_HOST}/${config.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
 	.then((result) => {
-		app.listen(process.env.PORT || 3000);
+		app.listen(config.PORT);
 	})
 	.catch((err) => {
 		throw err;

@@ -8,6 +8,8 @@ const User = require('../models/user');
 const Log = require('../models/log');
 const { sendEmail } = require('../utils/sendEmail');
 
+const config = require('../config/config');
+
 const setupCron = () => {
     cron.schedule('*/10 * * * * *', () => {
         console.log('running the task to send notifications');
@@ -40,9 +42,9 @@ const setupCron = () => {
 
                         const options = {
                             //gcmAPIKey: "",
-                            timeout: 5000, // 5 sec
-                            TTL: 60*60*24*4, // 4 days
-                            contentEncoding: "aes128gcm"
+                            timeout: config.WEBPUSH_TIMEOUT,
+                            TTL: config.WEBPUSH_TTL,
+                            contentEncoding: config.WEBPUSH_ENCODING
                         };
                     
                         let successCounter = 0;
