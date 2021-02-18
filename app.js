@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const i18n = require('i18n')
+const i18n = require('i18n');
 
 const app = express();
 
@@ -38,6 +38,9 @@ const subscriptionsRoutes = require("./routes/subscriptions");
 const logsRoutes = require("./routes/logs");
 const notificationsRoutes = require("./routes/notifications");
 const imagesRoutes = require("./routes/images");
+const scriptsRoutes = require("./routes/scripts");
+
+
 const cron = require('./utils/cron');
 cron();
 
@@ -46,6 +49,7 @@ app.use("/subscriptions", subscriptionsRoutes);
 app.use("/logs", logsRoutes);
 app.use("/notifications", notificationsRoutes);
 app.use("/images", imagesRoutes);
+app.use("/scripts", scriptsRoutes);
 
 mongoose
 	.connect(`mongodb+srv://${config.MONGODB_USER}:${config.MONGODB_PASSWORD}@${config.MONGODB_HOST}/${config.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
