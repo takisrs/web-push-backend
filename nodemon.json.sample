@@ -11,6 +11,10 @@
         "SMTP_PORT": 25,
         "SMTP_USER": "",
         "SMTP_PASSWORD": "",
-        "JWT_TOKEN_SECRET": "nodejswebnotifications"
+        "JWT_TOKEN_SECRET": "nodejswebnotifications",
+        "ELASTIC_APM_ACTIVE": true,
+        "ELASTIC_APM_SERVICE_NAME": "",
+        "ELASTIC_APM_SECRET_TOKEN": "",
+        "ELASTIC_APM_SERVER_URL": ""
     }
 }
