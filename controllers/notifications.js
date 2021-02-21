@@ -117,9 +117,9 @@ exports.sendNotification = (req, res, next) => {
 
     const options = {
         //gcmAPIKey: "",
-        timeout: config.WEBPUSH_TIMEOUT,
-        TTL: config.WEBPUSH_TTL,
-        contentEncoding: config.WEBPUSH_ENCODING
+        timeout: config.webpush.timeout,
+        TTL: config.webpush.ttl,
+        contentEncoding: config.webpush.encoding
     };
 
     let successCounter = 0;

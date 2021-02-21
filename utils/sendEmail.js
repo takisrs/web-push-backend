@@ -10,18 +10,18 @@ const config = require('../config/config');
  */
 exports.sendEmail = (to, subject, text) => {
     var transporter = nodemailer.createTransport({
-        host: config.SMTP_HOST,
-        port: config.SMTP_PORT,
+        host: config.smtp.host,
+        port: config.smtp.port,
         secure: false, // upgrade later with STARTTLS
         ignoreTLS: true,
         auth: {
-          user: config.SMTP_USER,
-          pass: config.SMTP_PASSWORD
+          user: config.smtp.user,
+          pass: config.smtp.password
         }
     });
     
     var mailOptions = {
-      from: config.EMAIL_FROM,
+      from: config.smtp.from,
       to: to,
       subject: subject,
       text: text

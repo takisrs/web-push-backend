@@ -1,6 +1,7 @@
 const { __ } = require('i18n');
 
 const Subscription = require('../models/subscription');
+const User = require('../models/user');
 
 exports.getSubscriptions = (req, res, next) => {
     let filter = {};
@@ -33,8 +34,10 @@ exports.getSubscriptions = (req, res, next) => {
 
 
 exports.postSubscription = (req, res, next) => {
+    User.find()
+
     const subscription = new Subscription({
-        userId: req.user._id.toString(),
+        userId: req.body.userId,
         ...req.body.subscription
     });
 

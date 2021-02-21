@@ -13,5 +13,9 @@
 	"Cannot update notification sent date": "Cannot update notification sent date",
 	"Error occured": "Error occured",
 	"Notification sent to %s subscribers!": "Notification sent to %s subscribers!",
-	"Notification sent": "Notification sent"
+	"Notification sent": "Notification sent",
+	"Subscription created successfully!": "Subscription created successfully!",
+	"Fetched %s subscriptions": "Fetched %s subscriptions",
+	"Fetched %s logs": "Fetched %s logs",
+	"%s // Notification sent": "%s // Notification sent"
 }

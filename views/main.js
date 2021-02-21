@@ -1,6 +1,6 @@
 const API_ENDPOINT = 'http://{HOST}/subscriptions';
 const VAPID_PUBLIC_KEY = '{PUBLIC_VAPID_KEY}';
-const AUTHORIZATION_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRha2lzcGFkYXpAZ21haWwuY29tIiwidXNlcklkIjoiNWY3MjU1MzgyOTBlZDE5OTZlNDM4NTEzIiwiaWF0IjoxNjAxMzI4NTUyLCJleHAiOjE2MDEzMzIxNTJ9.sfNGk1btJgKkM0Uks_o_2QRXFbVr6nI5r1OMzokMTMU";
+const USER_ID = "{USER_ID}";
 
 
 if ('serviceWorker' in navigator){
@@ -35,11 +35,11 @@ const makeSubscription = function() {
                 fetch(API_ENDPOINT, {
                     method: 'post',
                     headers: {
-                      'Content-type': 'application/json',
-                      'Authorization': 'Bearer '+AUTHORIZATION_TOKEN
+                      'Content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                      subscription: subscription
+                      subscription: subscription,
+                      userId: USER_ID
                     }),
                 }).then(function(response){
                     if (response.ok)

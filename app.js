@@ -1,3 +1,6 @@
+const apm = require('elastic-apm-node');
+apm.start()
+
 const express = require("express");
 const path = require("path");
 const i18n = require('i18n');
@@ -21,8 +24,8 @@ app.use((req, res, next) => {
 });
 
 i18n.configure({
-	locales: config.AVAILABLE_LOCALES,
-	defaultLocale: config.DEFAULT_LOCALE,
+	locales: config.localization.locales,
+	defaultLocale: config.localization.default,
 	retryInDefaultLocale: true,
 	header: 'accept-language',
 	autoReload: false,
@@ -52,9 +55,9 @@ app.use("/images", imagesRoutes);
 app.use("/scripts", scriptsRoutes);
 
 mongoose
-	.connect(`mongodb+srv://${config.MONGODB_USER}:${config.MONGODB_PASSWORD}@${config.MONGODB_HOST}/${config.MONGODB_DATABASE}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
+	.connect(`mongodb+srv://${config.mongodb.user}:${config.mongodb.password}@${config.mongodb.host}/${config.mongodb.database}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
 	.then((result) => {
-		app.listen(config.PORT);
+		app.listen(config.server.port);
 	})
 	.catch((err) => {
 		throw err;

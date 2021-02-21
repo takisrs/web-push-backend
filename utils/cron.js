@@ -42,9 +42,9 @@ const setupCron = () => {
 
                         const options = {
                             //gcmAPIKey: "",
-                            timeout: config.WEBPUSH_TIMEOUT,
-                            TTL: config.WEBPUSH_TTL,
-                            contentEncoding: config.WEBPUSH_ENCODING
+                            timeout: config.webpush.timeout,
+                            TTL: config.webpush.ttl,
+                            contentEncoding: config.webpush.encoding
                         };
                     
                         let successCounter = 0;
@@ -60,42 +60,44 @@ const setupCron = () => {
                                         notification: notification,
                                         response: response
                                     });
-                                    return log.save();
+                                    log.save();
                                 }).catch(error => {
                                     const log = new Log({
                                         subscription: sub,
                                         notification: notification,
                                         response: error
                                     });
-                                    return log.save();
+                                    log.save();
                                 });
                             };
+                            return successCounter;
+                        }).then(totalSent => {
+                            notification.sentAt = now;
+                            notification.save(err => {
+                                if (err){
+                                    const error = new Error(__("Cannot update notification sent date"));
+                                    error.statusCode = 422;
+                                    error.data = notification;
+                                    throw error;
+                                } else {
+                                    console.log(__("Notification sent to %s subscribers!", totalSent));
+                                    sendEmail(user.email, __("%s // Notification sent", notification.title), __("Notification sent to %s subscribers!", totalSent));
+                                }
+                            });
                         }).catch(error => {
                             throw error;
-                            //next(error);
                         });
 
-                        notification.sentAt = now;
-                        notification.save(err => {
-                            if (err){
-                                const error = new Error(__("Cannot update notification sent date"));
-                                error.statusCode = 422;
-                                error.data = notification;
-                                throw error;
-                            } else {
-                                console.log(__("Notification sent to %s subscribers!", successCounter));
-                                sendEmail(user.email, __("Notification sent"), __("Notification sent to %s subscribers!", successCounter));
-                            }
-                        });
+
                     }).catch(err => {
-                        //next(err);
+                        throw error;
                     })
                 }
 
             }
 
         }).catch(err => {
-            //next(err);
+            throw error;
         });
 
 

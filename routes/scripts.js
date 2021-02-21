@@ -1,25 +1,48 @@
 const router = require('express').Router();
 const fs = require('fs');
 const path = require("path");
+const { minify } = require('terser');
 
 const isAuth = require("../middleware/is-auth");
 
 router.get('/main', isAuth, (req, res) => {
-    console.log(req.headers.host);	
-	fs.readFile('views/main.js', 'utf8', function (err, data) {
+	fs.readFile('views/main.js', 'utf8', async function (err, code) {
 		if (err) {
 		  throw err;
 		}
         res.setHeader("Content-Type", "application/javascript; charset=UTF-8");
-        data = data.replace("{HOST}", req.headers.host);
-        data = data.replace("{PUBLIC_VAPID_KEY}", req.user.vapidKeys.publicKey);
-		res.send(data);
+        code = code.replace("{HOST}", req.headers.host);
+        code = code.replace("{PUBLIC_VAPID_KEY}", req.user.vapidKeys.publicKey);
+		code = code.replace("{USER_ID}", req.user._id.toString());
+
+		if (req.query.minify && req.query.minify==1){
+			const minifiedCode = await minify(code);
+			code = minifiedCode.code;
+		}	
+
+		res.send(code);
 	});
-	
 });
 
 router.get('/sw', isAuth, (req, res) => {
-	res.sendFile(path.join(__dirname, '../views/sw.js'));
+	fs.readFile(path.join(__dirname, '../views/sw.js'), 'utf8', async function (err, code) {
+		if (err) {
+		  throw err;
+		}
+        res.setHeader("Content-Type", "application/javascript; charset=UTF-8");
+        code = code.replace("{HOST}", req.headers.host);
+        code = code.replace("{PUBLIC_VAPID_KEY}", req.user.vapidKeys.publicKey);
+		code = code.replace("{USER_ID}", req.user._id.toString());
+
+		if (req.query.minify && req.query.minify==1){
+			const minifiedCode = await minify(code);
+			code = minifiedCode.code;
+		}	
+
+		res.send(code);
+	});
+
+	//res.sendFile(path.join(__dirname, '../views/sw.js'));
 });
 
 module.exports = router;

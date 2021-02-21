@@ -3,7 +3,7 @@ const multer = require("multer");
 const mkdirp = require("mkdirp");
 const config = require('../config/config');
 
-const maxSize = config.UPLOAD_MAXSIZE * 1024 * 1024;
+const maxSize = config.upload.maxsize * 1024 * 1024;
 
 let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
