@@ -2,6 +2,7 @@ const apm = require('elastic-apm-node');
 apm.start()
 
 const express = require("express");
+const compression = require('compression');
 const path = require("path");
 const i18n = require('i18n');
 
@@ -11,6 +12,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const config = require('./config/config');
+
+app.use(compression());
 
 app.use(bodyParser.json());
 

@@ -1,33 +1,16 @@
-const cron = require('node-cron');
-const webpush = require('web-push');
-const { __ } = require('i18n');
+const Notification = require("../models/notification");
 
-const Notification = require('../models/notification');
-const Subscription = require('../models/subscription');
-const User = require('../models/user');
-const Log = require('../models/log');
-const { sendEmail } = require('../utils/sendEmail');
+const NotificationService = {
 
-const config = require('../config/config');
+    sendNotification: (id) => {
 
-const NotificationService = require('../services/notification');
-
-const setupCron = () => {
-    cron.schedule('*/10 * * * * *', () => {
-        console.log('running the task to send notifications');
-
-        NotificationService.sendNotification("60259fc058893961e6681eca");
-
-        const now = new Date();
-        console.log(now);
-
-        Notification.find({sentAt: undefined, scheduledAt: { $lt: now }}).then(notifications => {
-            //console.log(notifications);
-
-            if (notifications.length > 0){
-                for (const notification of notifications){
-
+        Notification.findOne({ _id: id }).populate('user').then(notification => {
+            console.log(notification);
+        }).catch(err => {
+            throw err;
+        });
                     // get user
+                    /*
                     User.findById(notification.user).then(user => {
                         //console.log(user);
 
@@ -96,16 +79,8 @@ const setupCron = () => {
                     }).catch(err => {
                         throw error;
                     })
-                }
-
-            }
-
-        }).catch(err => {
-            throw error;
-        });
-
-
-    });
+                    */
+    }
 }
 
-module.exports = setupCron;
+module.exports = NotificationService;

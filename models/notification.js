@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -55,6 +55,10 @@ const notificationSchema = new mongoose.Schema({
     },
     sentAt: {
         type: Date
+    },
+    addedAt: {
+        type: Date,
+        default: Date.now 
     }
 
 });

@@ -6,18 +6,28 @@ const User = require('../models/user');
 exports.getSubscriptions = (req, res, next) => {
     let filter = {};
     if (req.user)
-        filter = { userId: req.user._id.toString() };
+        filter = { user: req.user._id.toString() };
 
     if (req.query.endpoint)
         filter = { endpoint: req.query.endpoint, ...filter };
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
 
-    Subscription.find(filter).then(subscriptions => {
+    Subscription.find(filter).skip((page-1) * limit).limit(limit).sort({added: -1}).then(subscriptions => {
         if (subscriptions.length > 0){
-            res.status(201).json({
-                ok: true,
-                message: __("Fetched %s subscriptions", subscriptions.length),
-                data: subscriptions
+            Subscription.countDocuments(filter).then(count => {
+                res.status(201).json({
+                    ok: true,
+                    message: __("Fetched %d subscriptions of %d total", subscriptions.length, count),
+                    data: {
+                        totalItems: count,
+                        currentPage: page,
+                        totalPages: Math.ceil(count / limit),
+                        itemsPerPage: limit,
+                        notifications: subscriptions
+                    }
+                });
             });
         } else {
             res.status(404).json({
@@ -34,10 +44,10 @@ exports.getSubscriptions = (req, res, next) => {
 
 
 exports.postSubscription = (req, res, next) => {
-    User.find()
+    //User.find()
 
     const subscription = new Subscription({
-        userId: req.body.userId,
+        user: req.body.userId,
         ...req.body.subscription
     });
 

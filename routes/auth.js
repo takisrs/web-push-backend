@@ -7,6 +7,14 @@ const router = express.Router();
 
 const authController = require('../controllers/auth');
 
+/**
+ * Route for login
+ * @name auth/login
+ * @function
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ */
 router.post('/login', [
     check('email').isEmail().normalizeEmail()
 ], authController.login);

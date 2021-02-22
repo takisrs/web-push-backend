@@ -9,6 +9,8 @@ const router = express.Router();
 
 const notificationsController = require("../controllers/notifications");
 
+router.get("/", isAuth, notificationsController.getNotifications);
+
 router.post("/", isAuth, [
     check("title").isLength({ min: 5 }).withMessage(__("Title is required with a mimimun length of 5 characters")), 
     check("message").isLength({ min: 10 }).withMessage(__("Message is required with a mimimun length of 10 characters")),

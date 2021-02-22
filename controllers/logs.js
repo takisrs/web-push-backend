@@ -5,7 +5,7 @@ const Log = require('../models/log');
 exports.getLogs = (req, res, next) => {
     let filter = {};
     if (req.user)
-        filter = { 'subscription.userId': req.user._id };
+        filter = { 'subscription.user': req.user._id };
     
     Log.find(filter).then(logs => {
         if (logs.length > 0){

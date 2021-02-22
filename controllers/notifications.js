@@ -18,7 +18,7 @@ exports.postNotification = (req, res, next) => {
         throw error;
     }
 
-    const userId = req.user._id.toString();
+    const user = req.user._id.toString();
 
     const title = req.body.title;
     const message = req.body.message;
@@ -40,7 +40,7 @@ exports.postNotification = (req, res, next) => {
         scheduledAt = req.body.scheduledAt;
     
     const notification = new Notification({
-        userId: userId,
+        user: user,
         title: title, 
         message: message,
         icon: icon,
@@ -123,7 +123,7 @@ exports.sendNotification = (req, res, next) => {
     };
 
     let successCounter = 0;
-    Subscription.find({userId: req.user._id.toString()}).then(async subscriptions => {
+    Subscription.find({user: req.user._id.toString()}).then(async subscriptions => {
         for (const sub of subscriptions){
             await webpush.sendNotification(sub, JSON.stringify(notificationData), options).then(result => {
                 return result;
@@ -158,3 +158,44 @@ exports.sendNotification = (req, res, next) => {
         next(error);
     });
 };
+
+
+exports.getNotifications = (req, res, next) => {
+    let filter = {};
+    if (req.user)
+        filter = { user: req.user._id.toString() };
+
+    if (req.query.id)
+       filter = { _id: req.query.id, ...filter };
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
+
+    Notification.find(filter).skip((page-1) * limit).limit(limit).sort({addedAt: -1}).then(notifications => {
+        if (notifications.length > 0){
+            Notification.countDocuments(filter).then(count => {
+                res.status(201).json({
+                    ok: true,
+                    message: __("Fetched %d notifications of %d total", notifications.length, count),
+                    data: {
+                        totalItems: count,
+                        currentPage: page,
+                        totalPages: Math.ceil(count / limit),
+                        itemsPerPage: limit,
+                        notifications: notifications
+                    }
+                });
+            });
+
+        } else {
+            res.status(404).json({
+                ok: false,
+                message: __("No notifications found"),
+                data: notifications
+            });
+        }
+
+    }).catch(err => {
+        next(err);
+    });
+}
