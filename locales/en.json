@@ -22,5 +22,6 @@
 	"Fetched %s notifications of %d total": "Fetched %s notifications of %d total",
 	"Fetched %d notifications of %d total": "Fetched %d notifications of %d total",
 	"No notifications found": "No notifications found",
-	"Fetched %d subscriptions of %d total": "Fetched %d subscriptions of %d total"
+	"Fetched %d subscriptions of %d total": "Fetched %d subscriptions of %d total",
+	"No logs found": "No logs found"
 }
