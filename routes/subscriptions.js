@@ -2,11 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { __ } = require('i18n');
 const { check } = require('express-validator');
+
 const isAuth = require('../middleware/is-auth');
+const subscriptionsController = require('../controllers/subscriptions');
 
 const router = express.Router();
-
-const subscriptionsController = require('../controllers/subscriptions');
 
 router.get('/', isAuth, subscriptionsController.getSubscriptions);
 

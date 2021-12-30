@@ -1,14 +1,8 @@
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
+const logger = require('./logger');
 
-/**
- * Sends an email
- *
- * @param {string} to
- * @param {string} subject
- * @param {string} text
- */
-exports.sendEmail = (to, subject, text) => {
+const sendEmail = (to, subject, text) => {
   const transporter = nodemailer.createTransport({
     host: config.smtp.host,
     port: config.smtp.port,
@@ -29,9 +23,11 @@ exports.sendEmail = (to, subject, text) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
+      logger.error('[EMAIL]', error);
     } else {
-      console.log(`Email sent: ${info.response}`);
+      logger.info('[EMAIL]', info.response);
     }
   });
 };
+
+module.exports = sendEmail;

@@ -6,7 +6,7 @@ const Notification = require('../models/notification');
 const Subscription = require('../models/subscription');
 const User = require('../models/user');
 const Log = require('../models/log');
-const { sendEmail } = require('../utils/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 
 const config = require('../config/config');
 

@@ -1,9 +1,9 @@
 const express = require('express');
+
 const isAuth = require('../middleware/is-auth');
+const imagesController = require('../controllers/images');
 
 const router = express.Router();
-
-const imagesController = require('../controllers/images');
 
 router.post('/', isAuth, imagesController.postImage);
 

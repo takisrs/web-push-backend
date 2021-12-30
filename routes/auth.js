@@ -1,20 +1,12 @@
 const express = require('express');
 const { check } = require('express-validator');
 const { __ } = require('i18n');
+
 const User = require('../models/user');
+const authController = require('../controllers/auth');
 
 const router = express.Router();
 
-const authController = require('../controllers/auth');
-
-/**
- * Route for login
- * @name auth/login
- * @function
- * @inner
- * @param {string} path - Express path
- * @param {callback} middleware - Express middleware.
- */
 router.post(
   '/login',
   [check('email').isEmail().normalizeEmail()],

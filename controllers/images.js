@@ -2,7 +2,7 @@ const { __ } = require('i18n');
 
 const uploadFile = require('../middleware/upload');
 
-exports.postImage = async (req, res, next) => {
+const postImage = async (req, res, next) => {
   try {
     await uploadFile(req, res);
 
@@ -32,3 +32,5 @@ exports.postImage = async (req, res, next) => {
     });
   }
 };
+
+module.exports = { postImage };

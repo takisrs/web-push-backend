@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+
 const User = require('../models/user');
 const config = require('../config/config');
 
-module.exports = (req, res, next) => {
+const isAuth = (req, res, next) => {
   const authHeader = req.get('Authorization');
   if (!authHeader) {
     const error = new Error('Not authenticated.');
@@ -40,3 +41,5 @@ module.exports = (req, res, next) => {
       next(err);
     });
 };
+
+module.exports = isAuth;

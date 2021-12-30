@@ -4,10 +4,9 @@ const mongoose = require('mongoose');
 const { __ } = require('i18n');
 
 const isAuth = require('../middleware/is-auth');
+const notificationsController = require('../controllers/notifications');
 
 const router = express.Router();
-
-const notificationsController = require('../controllers/notifications');
 
 router.get('/', isAuth, notificationsController.getNotifications);
 

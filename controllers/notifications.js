@@ -8,7 +8,7 @@ const Log = require('../models/log');
 
 const config = require('../config/config');
 
-exports.postNotification = (req, res, next) => {
+const postNotification = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -70,7 +70,7 @@ exports.postNotification = (req, res, next) => {
     });
 };
 
-exports.sendNotification = (req, res, next) => {
+const sendNotification = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -167,7 +167,7 @@ exports.sendNotification = (req, res, next) => {
     });
 };
 
-exports.getNotifications = (req, res, next) => {
+const getNotifications = (req, res, next) => {
   let filter = {};
   if (req.user) filter = { user: req.user._id.toString() };
 
@@ -210,4 +210,10 @@ exports.getNotifications = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+module.exports = {
+  postNotification,
+  sendNotification,
+  getNotifications,
 };

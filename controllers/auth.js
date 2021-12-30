@@ -5,10 +5,9 @@ const webpush = require('web-push');
 const { __ } = require('i18n');
 
 const config = require('../config/config');
-
 const User = require('../models/user');
 
-exports.login = (req, res, next) => {
+const login = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error(__('Validation error occured'));
@@ -69,7 +68,7 @@ exports.login = (req, res, next) => {
     });
 };
 
-exports.signup = (req, res, next) => {
+const signup = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -118,4 +117,9 @@ exports.signup = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+module.exports = {
+  login,
+  signup,
 };

@@ -12,6 +12,7 @@ const helmet = require('helmet');
 
 const config = require('./config/config');
 const cron = require('./utils/cron');
+const logger = require('./utils/logger');
 
 app.use(compression());
 app.use(bodyParser.json());
@@ -70,10 +71,12 @@ mongoose
   });
 
 app.use((error, req, res, next) => {
-  console.log(error);
   const status = error.statusCode || 500;
   const message = error.message || i18n.__('Error Occured');
   const errors = error.data || {};
+
+  logger.info(`${error.statusCode} - ${message}`);
+
   res.status(status).json({
     ok: false,
     message,

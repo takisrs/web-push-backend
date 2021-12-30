@@ -2,7 +2,7 @@ const { __ } = require('i18n');
 
 const Log = require('../models/log');
 
-exports.getLogs = (req, res, next) => {
+const getLogs = (req, res, next) => {
   let filter = {};
   if (req.user) filter = { 'subscription.user': req.user._id };
 
@@ -26,3 +26,5 @@ exports.getLogs = (req, res, next) => {
       next(err);
     });
 };
+
+module.exports = { getLogs };
