@@ -3,3 +3,5 @@ nodemon.json
 /resources/uploads/
 
 .env
+
+!.gitkeep

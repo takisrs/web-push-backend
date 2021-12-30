@@ -1,25 +1,20 @@
 const apm = require('elastic-apm-node');
-
 apm.start();
 
 const express = require('express');
 const compression = require('compression');
 const path = require('path');
 const i18n = require('i18n');
-
 const app = express();
-
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const config = require('./config/config');
+const cron = require('./utils/cron');
 
 app.use(compression());
-
 app.use(bodyParser.json());
-
 app.use('/resources', express.static(path.join(__dirname, 'resources')));
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -29,6 +24,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+cron();
 
 i18n.configure({
   locales: config.localization.locales,
@@ -49,10 +46,6 @@ const logsRoutes = require('./routes/logs');
 const notificationsRoutes = require('./routes/notifications');
 const imagesRoutes = require('./routes/images');
 const scriptsRoutes = require('./routes/scripts');
-
-const cron = require('./utils/cron');
-
-cron();
 
 app.use('/auth', authRoutes);
 app.use('/subscriptions', subscriptionsRoutes);
