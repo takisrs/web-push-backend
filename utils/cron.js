@@ -7,31 +7,25 @@ const Subscription = require('../models/subscription');
 const User = require('../models/user');
 const Log = require('../models/log');
 const sendEmail = require('../utils/sendEmail');
-
+const logger = require('./logger');
 const config = require('../config/config');
-
 const NotificationService = require('../services/notification');
 
 const setupCron = () => {
   cron.schedule('*/10 * * * * *', () => {
-    console.log('running the task to send notifications');
+    logger.debug('running the task to send notifications');
 
     NotificationService.sendNotification('60259fc058893961e6681eca');
 
     const now = new Date();
-    console.log(now);
 
     Notification.find({ sentAt: undefined, scheduledAt: { $lt: now } })
       .then((notifications) => {
-        //console.log(notifications);
-
         if (notifications.length > 0) {
           for (const notification of notifications) {
             // get user
             User.findById(notification.user)
               .then((user) => {
-                //console.log(user);
-
                 if (!user) {
                   const error = new Error(__('Cannot find notification user'));
                   error.statusCode = 422;
@@ -55,9 +49,7 @@ const setupCron = () => {
                 let successCounter = 0;
                 Subscription.find({ user: user._id.toString() })
                   .then(async (subscriptions) => {
-                    //console.log(subscriptions);
                     for (const sub of subscriptions) {
-                      console.log(sub);
                       await webpush
                         .sendNotification(
                           sub,
@@ -66,7 +58,6 @@ const setupCron = () => {
                         )
                         .then((response) => {
                           successCounter++;
-                          console.log(response);
                           const log = new Log({
                             subscription: sub,
                             notification: notification,
