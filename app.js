@@ -8,6 +8,7 @@ const i18n = require('i18n');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const config = require('./config/config');
 const cron = require('./utils/cron');
@@ -46,6 +47,8 @@ const logsRoutes = require('./routes/logs');
 const notificationsRoutes = require('./routes/notifications');
 const imagesRoutes = require('./routes/images');
 const scriptsRoutes = require('./routes/scripts');
+
+app.use(helmet());
 
 app.use('/auth', authRoutes);
 app.use('/subscriptions', subscriptionsRoutes);
