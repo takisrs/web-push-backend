@@ -3,39 +3,40 @@ const User = require('../models/user');
 const config = require('../config/config');
 
 module.exports = (req, res, next) => {
-    const authHeader = req.get('Authorization');
-    if (!authHeader) {
-        const error = new Error('Not authenticated.');
-        error.statusCode = 401;
-        throw error;
-    }
-    const token = authHeader.split(' ')[1];
-    let decodedToken;
+  const authHeader = req.get('Authorization');
+  if (!authHeader) {
+    const error = new Error('Not authenticated.');
+    error.statusCode = 401;
+    throw error;
+  }
+  const token = authHeader.split(' ')[1];
+  let decodedToken;
 
-    try {
-        decodedToken = jwt.verify(token, config.jwt.secret);
-    } catch (err) {
-        err.statusCode = 500;
-        throw err;
-    }
-    if (!decodedToken) {
-        const error = new Error('Not authenticated.');
-        error.statusCode = 401;
-        throw error;
-    }
+  try {
+    decodedToken = jwt.verify(token, config.jwt.secret);
+  } catch (err) {
+    err.statusCode = 500;
+    throw err;
+  }
+  if (!decodedToken) {
+    const error = new Error('Not authenticated.');
+    error.statusCode = 401;
+    throw error;
+  }
 
-    User.findById(decodedToken.userId).then(user => {
-        if (!user) {
-            if (!decodedToken) {
-                const error = new Error('Not authenticated.');
-                error.statusCode = 401;
-                throw error;
-            }
+  User.findById(decodedToken.userId)
+    .then((user) => {
+      if (!user) {
+        if (!decodedToken) {
+          const error = new Error('Not authenticated.');
+          error.statusCode = 401;
+          throw error;
         }
-        req.user = user;
-        next();
-    }).catch(err => {
-        next(err);
+      }
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      next(err);
     });
-
 };

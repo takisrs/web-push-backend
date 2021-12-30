@@ -9,4 +9,14 @@ services:
       - .env
     volumes:
       - .:/app
+    depends_on: 
+      - mongo
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: panos
+      MONGO_INITDB_ROOT_PASSWORD: panathinaikos
+    ports:
+      - 27017:27017
   
