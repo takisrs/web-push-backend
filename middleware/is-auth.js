@@ -28,11 +28,9 @@ const isAuth = (req, res, next) => {
   User.findById(decodedToken.userId)
     .then((user) => {
       if (!user) {
-        if (!decodedToken) {
-          const error = new Error('Not authenticated.');
-          error.statusCode = 401;
-          throw error;
-        }
+        const error = new Error('Not authenticated.');
+        error.statusCode = 401;
+        throw error;
       }
       req.user = user;
       next();

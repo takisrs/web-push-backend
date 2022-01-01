@@ -1,87 +1,75 @@
+const { __ } = require('i18n');
+const webpush = require('web-push');
+
 const Notification = require('../models/notification');
+const Subscription = require('../models/subscription');
+const Log = require('../models/log');
+const config = require('../config/config');
+const logger = require('../utils/logger');
+const sendEmail = require('../utils/sendEmail');
 
 const NotificationService = {
-  sendNotification: (id) => {
-    Notification.findOne({ _id: id })
-      .populate('user')
-      .then((notification) => {
-        console.log(notification);
-      })
-      .catch((err) => {
-        throw err;
-      });
+  sendNotification: async (id) => {
+    const notification = await Notification.findOne({ _id: id }).populate(
+      'user'
+    );
 
-    /*
-    User.findById(notification.user).then(user => {
-        //console.log(user);
+    if (!notification) {
+      const error = new Error(__('Cannot find notification'));
+      error.statusCode = 422;
+      error.data = { id };
+      throw error;
+    }
 
-        if (!user){
-            const error = new Error(__("Cannot find notification user"));
-            error.statusCode = 422;
-            error.data = notification;
-            throw error;
+    const user = notification.user;
+
+    if (!user) {
+      const error = new Error(__('Cannot find notification user'));
+      error.statusCode = 422;
+      error.data = notification;
+      throw error;
+    }
+
+    webpush.setVapidDetails(
+      'mailto:' + user.email,
+      user.vapidKeys.publicKey,
+      user.vapidKeys.privateKey
+    );
+
+    const subscriptions = await Subscription.find({
+      user: user._id.toString(),
+    });
+
+    let successCounter = 0;
+    for (const subscription of subscriptions) {
+      const notificationResult = await webpush.sendNotification(
+        subscription,
+        JSON.stringify(notification),
+        {
+          timeout: config.webpush.timeout,
+          TTL: config.webpush.ttl,
+          contentEncoding: config.webpush.encoding,
         }
+      );
 
-        webpush.setVapidDetails(
-            'mailto:'+user.email,
-            user.vapidKeys.publicKey,
-            user.vapidKeys.privateKey
-        );
+      if (notificationResult) {
+        successCounter++;
 
-        const options = {
-            //gcmAPIKey: "",
-            timeout: config.webpush.timeout,
-            TTL: config.webpush.ttl,
-            contentEncoding: config.webpush.encoding
-        };
-
-        let successCounter = 0;
-        Subscription.find({user: user._id.toString()}).then(async subscriptions => {
-            //console.log(subscriptions);
-            for (const sub of subscriptions){
-                console.log(sub);
-                await webpush.sendNotification(sub, JSON.stringify(notification), options)
-                .then(response => {
-                    successCounter++;
-                    console.log(response);
-                    const log = new Log({
-                        subscription: sub,
-                        notification: notification,
-                        response: response
-                    });
-                    log.save();
-                }).catch(error => {
-                    const log = new Log({
-                        subscription: sub,
-                        notification: notification,
-                        response: error
-                    });
-                    log.save();
-                });
-            };
-            return successCounter;
-        }).then(totalSent => {
-            notification.sentAt = now;
-            notification.save(err => {
-                if (err){
-                    const error = new Error(__("Cannot update notification sent date"));
-                    error.statusCode = 422;
-                    error.data = notification;
-                    throw error;
-                } else {
-                    console.log(__("Notification sent to %s subscribers!", totalSent));
-                    sendEmail(user.email, __("%s // Notification sent", notification.title),
-                    __("Notification sent to %s subscribers!", totalSent));
-                }
-            });
-        }).catch(error => {
-            throw error;
+        const log = new Log({
+          subscription,
+          notification,
+          response: notificationResult,
         });
+        await log.save();
+      }
+    }
 
-    }).catch(err => {
-        throw error;
-    })
-    */
+    logger.info(__('Notification sent to %s subscribers!', successCounter));
+    sendEmail(
+      user.email,
+      __('%s // Notification sent', notification.title),
+      __('Notification sent to %s subscribers!', successCounter)
+    );
   },
 };
 

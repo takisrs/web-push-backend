@@ -6,8 +6,6 @@ const postImage = async (req, res, next) => {
   try {
     await uploadFile(req, res);
 
-    console.log(req.file);
-
     if (req.file == undefined) {
       return res.status(400).json({
         ok: false,

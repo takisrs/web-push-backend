@@ -15,7 +15,11 @@ const setupCron = () => {
   cron.schedule('*/10 * * * * *', () => {
     logger.debug('running the task to send notifications');
 
-    NotificationService.sendNotification('60259fc058893961e6681eca');
+    NotificationService.sendNotification('60259fc058893961e6681eca').catch(
+      (error) => {
+        logger.error(error);
+      }
+    );
 
     const now = new Date();
 
