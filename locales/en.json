@@ -26,5 +26,8 @@
 	"No logs found": "No logs found",
 	"The provided id is not a valid one": "The provided id is not a valid one",
 	"Cannot find notification": "Cannot find notification",
-	"Notification marked as sent": "Notification marked as sent"
+	"Notification marked as sent": "Notification marked as sent",
+	"A user with this email could not be found": "A user with this email could not be found",
+	"E-mail already in use": "E-mail already in use",
+	"Account created!": "Account created!"
 }
