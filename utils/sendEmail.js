@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const config = require('../config/config');
 const logger = require('./logger');
 
-const sendEmail = (to, subject, text) => {
+const sendEmail = async (to, subject, text) => {
   const transporter = nodemailer.createTransport({
     host: config.smtp.host,
     port: config.smtp.port,
@@ -21,7 +21,7 @@ const sendEmail = (to, subject, text) => {
     text,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
+  await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       logger.error('[EMAIL]', error);
     } else {

@@ -25,5 +25,6 @@
 	"Fetched %d subscriptions of %d total": "Fetched %d subscriptions of %d total",
 	"No logs found": "No logs found",
 	"The provided id is not a valid one": "The provided id is not a valid one",
-	"Cannot find notification": "Cannot find notification"
+	"Cannot find notification": "Cannot find notification",
+	"Notification marked as sent": "Notification marked as sent"
 }

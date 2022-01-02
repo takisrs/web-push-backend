@@ -14,8 +14,6 @@ const config = require('./config/config');
 const cron = require('./utils/cron');
 const logger = require('./utils/logger');
 
-const { sendNotification } = require('./services/notification');
-
 app.use(compression());
 app.use(bodyParser.json());
 app.use('/resources', express.static(path.join(__dirname, 'resources')));
@@ -43,10 +41,6 @@ i18n.configure({
 });
 
 app.use(i18n.init);
-
-sendNotification('6036c3be3764ba172d90a309').catch((error) =>
-  console.log(error)
-);
 
 const authRoutes = require('./routes/auth');
 const subscriptionsRoutes = require('./routes/subscriptions');

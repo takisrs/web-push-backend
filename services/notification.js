@@ -65,11 +65,13 @@ const NotificationService = {
     }
 
     logger.info(__('Notification sent to %s subscribers!', successCounter));
-    sendEmail(
+    await sendEmail(
       user.email,
       __('%s // Notification sent', notification.title),
       __('Notification sent to %s subscribers!', successCounter)
     );
+
+    return successCounter;
   },
 };
 
