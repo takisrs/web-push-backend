@@ -3,65 +3,25 @@ const API_ENDPOINT = 'http://{HOST}/subscriptions';
 const VAPID_PUBLIC_KEY = '{PUBLIC_VAPID_KEY}';
 const USER_ID = '{USER_ID}';
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/sw.js')
-    .then((registration) => {
-      console.log(
-        'ServiceWorker registration successful with scope: ',
-        registration.scope
-      );
-    })
-    .catch((err) => {
-      console.log('ServiceWorker registration failed: ', err);
-    });
+/**
+ * Converts a base64 string to a Uint8Array
+ * @param {string} base64String a public vapid key
+ * @returns {Uint8Array}
+ */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
-const makeSubscription = function () {
-  if ('serviceWorker' in navigator) {
-    let swRegistration;
-    navigator.serviceWorker.ready
-      .then((swReg) => {
-        swRegistration = swReg;
-        return swReg.pushManager.getSubscription();
-      })
-      .then((subscription) => {
-        if (subscription == null) {
-          const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-
-          return swRegistration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: convertedVapidKey,
-          });
-        }
-        console.log(subscription);
-        // already subscribed
-      })
-      .then((subscription) => {
-        if (subscription) {
-          console.log(subscription);
-          fetch(API_ENDPOINT, {
-            method: 'post',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify({
-              subscription,
-              userId: USER_ID,
-            }),
-          })
-            .then((response) => {
-              if (response.ok) showNotification();
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      });
-  }
-};
-
-const showNotification = function () {
+const showNotification = () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistration().then((registration) => {
       console.log(registration);
@@ -99,10 +59,62 @@ const showNotification = function () {
   }
 };
 
+const storeSubscription = (subscription, cb) => {
+  fetch(API_ENDPOINT, {
+    method: 'post',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      subscription,
+      userId: USER_ID,
+    }),
+  })
+    .then((response) => {
+      if (response.ok) cb();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const makeSubscription = async () => {
+  if ('serviceWorker' in navigator) {
+    const swRegistration = await navigator.serviceWorker.ready;
+    const subscription = await swRegistration.pushManager.getSubscription();
+
+    if (subscription == null) {
+      const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+
+      const newSubscription = await swRegistration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertedVapidKey,
+      });
+
+      if (newSubscription) {
+        console.log(subscription);
+        storeSubscription(subscription, showNotification);
+      }
+    }
+  }
+};
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then((registration) => {
+      console.log(
+        'ServiceWorker registration successful with scope: ',
+        registration.scope
+      );
+    })
+    .catch((err) => {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+}
+
+const enableNotificationsBtn = document.getElementById('enable-notifications');
 if ('Notification' in window) {
-  const enableNotificationsBtn = document.getElementById(
-    'enable-notifications'
-  );
   enableNotificationsBtn.addEventListener('click', (event) => {
     event.preventDefault();
     Notification.requestPermission((result) => {
@@ -111,31 +123,9 @@ if ('Notification' in window) {
         console.log('No Notification Permission granted');
       } else {
         makeSubscription();
-        // showNotification();
       }
     });
   });
 } else {
-  const enableNotificationsBtn = document.getElementById(
-    'enable-notifications'
-  );
   enableNotificationsBtn.style.display = 'none';
-}
-
-/**
- * Converts a base64 string to a Uint8Array
- * @param {string} base64String a public vapid key
- * @returns {Uint8Array}
- */
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
 }
