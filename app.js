@@ -61,7 +61,7 @@ app.use('/scripts', scriptsRoutes);
 mongoose
   .connect(
     `mongodb+srv://${config.mongodb.user}:${config.mongodb.password}@${config.mongodb.host}/${config.mongodb.database}?retryWrites=true&w=majority`,
-    { useNewUrlParser: true, useUnifiedTopology: true }
+    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
   )
   .then((_result) => {
     app.listen(config.server.port);

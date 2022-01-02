@@ -10,9 +10,10 @@ const sendEmail = require('../utils/sendEmail');
 
 const NotificationService = {
   sendNotification: async (id) => {
-    const notification = await Notification.findOne({ _id: id }).populate(
-      'user'
-    );
+    const notification = await Notification.findOneAndUpdate(
+      { _id: id },
+      { status: 'IN_PROGRESS' }
+    ).populate('user');
 
     if (!notification) {
       const error = new Error(__('Cannot find notification'));
@@ -42,25 +43,29 @@ const NotificationService = {
 
     let successCounter = 0;
     for (const subscription of subscriptions) {
-      const notificationResult = await webpush.sendNotification(
-        subscription,
-        JSON.stringify(notification),
-        {
-          timeout: config.webpush.timeout,
-          TTL: config.webpush.ttl,
-          contentEncoding: config.webpush.encoding,
-        }
-      );
-
-      if (notificationResult) {
-        successCounter++;
-
-        const log = new Log({
+      try {
+        const notificationResult = await webpush.sendNotification(
           subscription,
-          notification,
-          response: notificationResult,
-        });
-        await log.save();
+          JSON.stringify(notification),
+          {
+            timeout: config.webpush.timeout,
+            TTL: config.webpush.ttl,
+            contentEncoding: config.webpush.encoding,
+          }
+        );
+
+        if (notificationResult) {
+          successCounter++;
+
+          const log = new Log({
+            subscription,
+            notification,
+            response: notificationResult,
+          });
+          await log.save();
+        }
+      } catch (error) {
+        logger.debug(error);
       }
     }
 

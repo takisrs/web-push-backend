@@ -60,6 +60,20 @@ const notificationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    enum: ['PENDING', 'IN_PROGRESS', 'COMPLETED'],
+    default: 'PENDING',
+  },
 });
+
+notificationSchema.statics.findPending = function (cb) {
+  const now = new Date();
+
+  return this.find(
+    { sentAt: undefined, scheduledAt: { $lt: now }, status: 'PENDING' },
+    cb
+  );
+};
 
 module.exports = mongoose.model('Notification', notificationSchema);

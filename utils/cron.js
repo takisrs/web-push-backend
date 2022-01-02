@@ -10,19 +10,15 @@ const setupCron = () => {
   cron.schedule('*/10 * * * * *', async () => {
     logger.debug('running the task to send notifications');
 
-    const now = new Date();
-
-    const notifications = await Notification.find({
-      sentAt: undefined,
-      scheduledAt: { $lt: now },
-    });
+    const notifications = await Notification.findPending();
 
     if (notifications && notifications.length > 0) {
       for (const notification of notifications) {
         sendNotification(notification._id.toString())
           .then((result) => {
             logger.info(result);
-            notification.sentAt = now;
+            notification.sentAt = new Date();
+            notification.status = 'COMPLETED';
             notification.save((err) => {
               if (err) {
                 throwError(
