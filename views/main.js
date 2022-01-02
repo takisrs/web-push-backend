@@ -92,8 +92,8 @@ const makeSubscription = async () => {
       });
 
       if (newSubscription) {
-        console.log(subscription);
-        storeSubscription(subscription, showNotification);
+        console.log(newSubscription);
+        storeSubscription(newSubscription, showNotification);
       }
     }
   }
