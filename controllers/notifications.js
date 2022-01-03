@@ -11,32 +11,31 @@ const config = require('../config/config');
 const postNotification = (req, res, next) => {
   const errors = validationResult(req);
 
+  const {
+    title,
+    message,
+    icon,
+    image,
+    badge, // 96X96
+    dir = 'ltr', // ltr, rtl
+    lang = 'el-GR', // BCP 47, en-US
+    vibrate, // [100, 30, 100] vibrate, pause, vibrate
+    silent = false, // when true, don't use vibrate option (throws a TypeError)
+    tag,
+    renotify = true,
+    actions = [], // [{ action: "confirm", title: "OK", icon: "https://..." }]
+    data = [],
+  } = req.body;
+
+  const scheduledAt = req.body.scheduledAt || new Date();
+  const user = req.user._id.toString();
+
   if (!errors.isEmpty()) {
     const error = new Error(__('Validation error occured'));
     error.statusCode = 422;
     error.data = { errors: errors.array() };
     throw error;
   }
-
-  const user = req.user._id.toString();
-
-  const { title } = req.body;
-  const { message } = req.body;
-  const { icon } = req.body;
-  const { image } = req.body;
-  const dir = req.body.dir || 'ltr'; // ltr, rtl
-  const lang = req.body.lang || 'el-GR'; // BCP 47, en-US
-  const { vibrate } = req.body; // [100, 30, 100] vibrate, pause, vibrate
-  const silent = req.body.silent || false; // when true, don't use vibrate option (throws a TypeError)
-  const { badge } = req.body; // 96X96
-  const { tag } = req.body;
-  const renotify = req.body.renotify || true; // true, false
-  const actions = req.body.actions || []; // [{ action: "confirm", title: "OK", icon: "https://..." }]
-  const data = req.body.data || [];
-
-  let scheduledAt = new Date();
-
-  if (req.body.scheduledAt) scheduledAt = req.body.scheduledAt;
 
   const notification = new Notification({
     user,
@@ -170,7 +169,6 @@ const sendNotification = (req, res, next) => {
 const getNotifications = (req, res, next) => {
   let filter = {};
   if (req.user) filter = { user: req.user._id.toString() };
-
   if (req.query.id) filter = { _id: req.query.id, ...filter };
 
   const page = parseInt(req.query.page) || 1;

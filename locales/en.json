@@ -29,5 +29,6 @@
 	"Notification marked as sent": "Notification marked as sent",
 	"A user with this email could not be found": "A user with this email could not be found",
 	"E-mail already in use": "E-mail already in use",
-	"Account created!": "Account created!"
+	"Account created!": "Account created!",
+	"user not found": "user not found"
 }

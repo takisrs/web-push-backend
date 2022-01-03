@@ -1,6 +1,9 @@
 const { __ } = require('i18n');
 
 const Subscription = require('../models/subscription');
+const User = require('../models/user');
+const asyncMiddleware = require('../middleware/async');
+const { throwError } = require('../utils/throwError');
 
 const getSubscriptions = (req, res, next) => {
   let filter = {};
@@ -47,27 +50,30 @@ const getSubscriptions = (req, res, next) => {
     });
 };
 
-const postSubscription = (req, res, next) => {
-  // User.find()
+const postSubscription = asyncMiddleware(async (req, res, next) => {
+  const { userId, subscription } = req.body;
 
-  const subscription = new Subscription({
-    user: req.body.userId,
-    ...req.body.subscription,
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throwError('user not found', 400, { id: userId });
+  }
+
+  const subscriptionObj = new Subscription({
+    user: userId,
+    ...subscription,
   });
 
-  subscription
-    .save()
-    .then((_result) => {
-      res.status(201).json({
-        ok: true,
-        message: __('Subscription created successfully!'),
-        data: subscription,
-      });
-    })
-    .catch((err) => {
-      next(err);
+  const result = await subscriptionObj.save();
+
+  if (result) {
+    res.status(201).json({
+      ok: true,
+      message: __('Subscription created successfully!'),
+      data: subscriptionObj,
     });
-};
+  }
+});
 
 module.exports = {
   getSubscriptions,
