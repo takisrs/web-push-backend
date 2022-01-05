@@ -212,7 +212,7 @@ const deleteNotification = asyncMiddleware(async (req, res) => {
     });
   }
 
-  const notification = await Notification.findByIdAndDelete(id);
+  const notification = await Notification.findByIdAndDelete(id); // TODO: Check user id
 
   if (notification) {
     return res.status(201).json({
