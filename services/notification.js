@@ -57,7 +57,8 @@ const NotificationService = {
             notification,
             response: notificationResult,
           });
-          await log.save();
+          const result = await log.save();
+          console.log(result);
         }
       } catch (error) {
         logger.debug(error);

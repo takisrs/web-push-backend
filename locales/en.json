@@ -35,5 +35,8 @@
 	"No subscription found": "No subscription found",
 	"Uploaded the file successfully: %s": "Uploaded the file successfully: %s",
 	"Please upload a file!": "Please upload a file!",
-	"Could not upload the file": "Could not upload the file"
+	"Could not upload the file": "Could not upload the file",
+	"Notification %s delete successfully!": "Notification %s delete successfully!",
+	"No notification with id %s": "No notification with id %s",
+	"Notification %s was deleted successfully!": "Notification %s was deleted successfully!"
 }

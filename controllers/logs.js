@@ -7,7 +7,7 @@ const ApiError = require('../utils/api-error');
 const getLogs = asyncMiddleware(async (req, res) => {
   const { user } = req;
   let filter = {};
-  if (user) filter = { 'subscription.user1': user._id };
+  if (user) filter = { 'subscription.user': user._id };
 
   const logs = await Log.find(filter);
 

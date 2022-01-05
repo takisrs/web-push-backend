@@ -1,14 +1,21 @@
 const express = require('express');
 const { check, oneOf } = require('express-validator');
-const mongoose = require('mongoose');
 const { __ } = require('i18n');
 
 const isAuth = require('../middleware/is-auth');
 const notificationsController = require('../controllers/notifications');
+const { isValidMongoId } = require('../utils/validation');
 
 const router = express.Router();
 
 router.get('/', isAuth, notificationsController.getNotifications);
+
+router.delete(
+  '/:id',
+  isAuth,
+  [check('id').custom(isValidMongoId)],
+  notificationsController.deleteNotification
+);
 
 router.post(
   '/',
@@ -44,18 +51,7 @@ router.post(
 router.post(
   '/send',
   isAuth,
-  [
-    check('id').custom(
-      (value) =>
-        new Promise((resolve, reject) => {
-          const isValid = mongoose.Types.ObjectId.isValid(value);
-          if (!isValid) {
-            reject(new Error(__('The provided id is not a valid one')));
-          }
-          resolve(true);
-        })
-    ),
-  ],
+  [check('id').custom(isValidMongoId)],
   notificationsController.sendNotification
 );
 

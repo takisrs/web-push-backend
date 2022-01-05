@@ -201,8 +201,35 @@ const getNotifications = asyncMiddleware(async (req, res) => {
   }
 });
 
+const deleteNotification = asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
+  }
+
+  const notification = await Notification.findByIdAndDelete(id);
+
+  if (notification) {
+    return res.status(201).json({
+      ok: true,
+      message: __('Notification %s was deleted successfully!', id),
+      data: {
+        notification,
+      },
+    });
+  } else {
+    throw new ApiError(__('No notification with id %s', id, 404));
+  }
+});
+
 module.exports = {
   postNotification,
   sendNotification,
   getNotifications,
+  deleteNotification,
 };
