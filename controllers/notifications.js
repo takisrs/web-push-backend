@@ -8,8 +8,9 @@ const Log = require('../models/log');
 
 const config = require('../config/config');
 const ApiError = require('../utils/api-error');
+const asyncMiddleware = require('../middleware/async');
 
-const postNotification = (req, res, next) => {
+const postNotification = asyncMiddleware(async (req, res, next) => {
   const errors = validationResult(req);
 
   const {
@@ -67,7 +68,7 @@ const postNotification = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-};
+});
 
 const sendNotification = (req, res, next) => {
   const errors = validationResult(req);
@@ -165,49 +166,40 @@ const sendNotification = (req, res, next) => {
     });
 };
 
-const getNotifications = (req, res, next) => {
+const getNotifications = asyncMiddleware(async (req, res) => {
   let filter = {};
   if (req.user) filter = { user: req.user._id.toString() };
   if (req.query.id) filter = { _id: req.query.id, ...filter };
 
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 3;
+  const limit = parseInt(req.query.limit) || 10;
 
-  Notification.find(filter)
+  const notifications = await Notification.find(filter)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ addedAt: -1 })
-    .then((notifications) => {
-      if (notifications.length > 0) {
-        Notification.countDocuments(filter).then((count) => {
-          res.status(201).json({
-            ok: true,
-            message: __(
-              'Fetched %d notifications of %d total',
-              notifications.length,
-              count
-            ),
-            data: {
-              totalItems: count,
-              currentPage: page,
-              totalPages: Math.ceil(count / limit),
-              itemsPerPage: limit,
-              notifications,
-            },
-          });
-        });
-      } else {
-        res.status(404).json({
-          ok: false,
-          message: __('No notifications found'),
-          data: notifications,
-        });
-      }
-    })
-    .catch((err) => {
-      next(err);
+    .sort({ addedAt: -1 });
+
+  if (notifications && notifications.length > 0) {
+    const totalNotifications = await Notification.countDocuments(filter);
+    res.status(201).json({
+      ok: true,
+      message: __(
+        'Fetched %d notifications of %d total',
+        notifications.length,
+        totalNotifications
+      ),
+      data: {
+        totalItems: totalNotifications,
+        currentPage: page,
+        totalPages: Math.ceil(totalNotifications / limit),
+        itemsPerPage: limit,
+        notifications,
+      },
     });
-};
+  } else {
+    throw new ApiError(__('No notifications found'), 404);
+  }
+});
 
 module.exports = {
   postNotification,

@@ -2,17 +2,14 @@ const { __ } = require('i18n');
 
 const uploadFile = require('../middleware/upload');
 const ApiError = require('../utils/api-error');
+const asyncMiddleware = require('../middleware/async');
 
-const postImage = async (req, res, next) => {
+const postImage = asyncMiddleware(async (req, res) => {
   try {
     await uploadFile(req, res);
 
     if (req.file == undefined) {
-      return res.status(400).json({
-        ok: false,
-        message: __('Please upload a file!'),
-        data: [],
-      });
+      throw new ApiError(__('Please upload a file!'), 400);
     }
 
     res.status(200).json({
@@ -24,8 +21,8 @@ const postImage = async (req, res, next) => {
       },
     });
   } catch (err) {
-    throw new ApiError(__('Could not upload the file'), 500, {});
+    throw new ApiError(__('Could not upload the file'), 500);
   }
-};
+});
 
 module.exports = { postImage };

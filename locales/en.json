@@ -32,5 +32,8 @@
 	"Account created!": "Account created!",
 	"user not found": "user not found",
 	"User is not active": "User is not active",
-	"No subscription found": "No subscription found"
+	"No subscription found": "No subscription found",
+	"Uploaded the file successfully: %s": "Uploaded the file successfully: %s",
+	"Please upload a file!": "Please upload a file!",
+	"Could not upload the file": "Could not upload the file"
 }

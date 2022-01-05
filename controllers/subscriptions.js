@@ -5,50 +5,41 @@ const User = require('../models/user');
 const asyncMiddleware = require('../middleware/async');
 const ApiError = require('../utils/api-error');
 
-const getSubscriptions = (req, res, next) => {
+const getSubscriptions = asyncMiddleware(async (req, res) => {
   let filter = {};
   if (req.user) filter = { user: req.user._id.toString() };
 
   if (req.query.endpoint) filter = { endpoint: req.query.endpoint, ...filter };
 
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 3;
+  const limit = parseInt(req.query.limit) || 10;
 
-  Subscription.find(filter)
+  const subscriptions = await Subscription.find(filter)
     .skip((page - 1) * limit)
     .limit(limit)
-    .sort({ added: -1 })
-    .then((subscriptions) => {
-      if (subscriptions.length > 0) {
-        Subscription.countDocuments(filter).then((count) => {
-          res.status(201).json({
-            ok: true,
-            message: __(
-              'Fetched %d subscriptions of %d total',
-              subscriptions.length,
-              count
-            ),
-            data: {
-              totalItems: count,
-              currentPage: page,
-              totalPages: Math.ceil(count / limit),
-              itemsPerPage: limit,
-              notifications: subscriptions,
-            },
-          });
-        });
-      } else {
-        res.status(404).json({
-          ok: false,
-          message: __('No subscription found'),
-          data: subscriptions,
-        });
-      }
-    })
-    .catch((err) => {
-      next(err);
+    .sort({ added: -1 });
+
+  if (subscriptions && subscriptions.length > 0) {
+    const totalSubscriptions = await Subscription.countDocuments(filter);
+    res.status(201).json({
+      ok: true,
+      message: __(
+        'Fetched %d subscriptions of %d total',
+        subscriptions.length,
+        totalSubscriptions
+      ),
+      data: {
+        totalItems: totalSubscriptions,
+        currentPage: page,
+        totalPages: Math.ceil(totalSubscriptions / limit),
+        itemsPerPage: limit,
+        subscriptions,
+      },
     });
-};
+  } else {
+    throw new ApiError(__('No subscription found'), 404);
+  }
+});
 
 const postSubscription = asyncMiddleware(async (req, res, next) => {
   const { userId, subscription } = req.body;
