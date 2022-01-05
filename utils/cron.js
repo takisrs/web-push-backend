@@ -4,7 +4,7 @@ const { __ } = require('i18n');
 const Notification = require('../models/notification');
 const { sendNotification } = require('../services/notification');
 const logger = require('./logger');
-const { throwError } = require('./throwError');
+const ApiError = require('./api-error');
 
 const setupCron = () => {
   cron.schedule('*/10 * * * * *', async () => {
@@ -21,8 +21,8 @@ const setupCron = () => {
             notification.status = 'COMPLETED';
             notification.save((err) => {
               if (err) {
-                throwError(
-                  'Cannot update notification sent date',
+                throw new ApiError(
+                  __('Cannot update notification sent date'),
                   422,
                   notification
                 );

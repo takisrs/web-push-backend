@@ -7,30 +7,36 @@ const { __ } = require('i18n');
 const config = require('../config/config');
 const User = require('../models/user');
 const asyncMiddleware = require('../middleware/async');
-const { throwError } = require('../utils/throwError');
+const ApiError = require('../utils/api-error');
 
 const login = asyncMiddleware(async (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    throwError('Validation error occured', 422, { errors: errors.array() });
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
   }
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    throwError('A user with this email could not be found', 401, { email });
+    throw new ApiError(__('A user with this email could not be found'), 401, {
+      email,
+    });
   }
 
   if (!user.active) {
-    throwError('User is not active', 401, { userId: user._id.toString() });
+    throw new ApiError(__('User is not active'), 401, {
+      userId: user._id.toString(),
+    });
   }
 
   const isPasswordEqual = await bcrypt.compare(password, user.password);
 
   if (!isPasswordEqual) {
-    throwError('Wrong password!', 401);
+    throw new ApiError(__('Wrong password!'), 401);
   }
 
   const token = jwt.sign(
@@ -57,7 +63,9 @@ const signup = asyncMiddleware(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    throwError('Validation error occured', 422, { errors: errors.array() });
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
   }
 
   const vapidKeys = webpush.generateVAPIDKeys();

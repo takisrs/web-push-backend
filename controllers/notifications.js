@@ -7,6 +7,7 @@ const Notification = require('../models/notification');
 const Log = require('../models/log');
 
 const config = require('../config/config');
+const ApiError = require('../utils/api-error');
 
 const postNotification = (req, res, next) => {
   const errors = validationResult(req);
@@ -31,10 +32,9 @@ const postNotification = (req, res, next) => {
   const user = req.user._id.toString();
 
   if (!errors.isEmpty()) {
-    const error = new Error(__('Validation error occured'));
-    error.statusCode = 422;
-    error.data = { errors: errors.array() };
-    throw error;
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
   }
 
   const notification = new Notification({
@@ -73,10 +73,9 @@ const sendNotification = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    const error = new Error(__('Validation error occured'));
-    error.statusCode = 422;
-    error.data = { errors: errors.array() };
-    throw error;
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
   }
 
   webpush.setVapidDetails(

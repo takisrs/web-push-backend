@@ -3,7 +3,7 @@ const { __ } = require('i18n');
 const Subscription = require('../models/subscription');
 const User = require('../models/user');
 const asyncMiddleware = require('../middleware/async');
-const { throwError } = require('../utils/throwError');
+const ApiError = require('../utils/api-error');
 
 const getSubscriptions = (req, res, next) => {
   let filter = {};
@@ -56,7 +56,7 @@ const postSubscription = asyncMiddleware(async (req, res, next) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    throwError('user not found', 400, { id: userId });
+    throw new ApiError(__('user not found'), 400, { id: userId });
   }
 
   const subscriptionObj = new Subscription({

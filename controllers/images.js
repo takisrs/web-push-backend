@@ -1,6 +1,7 @@
 const { __ } = require('i18n');
 
 const uploadFile = require('../middleware/upload');
+const ApiError = require('../utils/api-error');
 
 const postImage = async (req, res, next) => {
   try {
@@ -23,11 +24,7 @@ const postImage = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      ok: false,
-      message: __('Could not upload the file'),
-      data: '',
-    });
+    throw new ApiError(__('Could not upload the file'), 500, {});
   }
 };
 

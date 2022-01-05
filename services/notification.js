@@ -7,6 +7,7 @@ const Log = require('../models/log');
 const config = require('../config/config');
 const logger = require('../utils/logger');
 const sendEmail = require('../utils/sendEmail');
+const ApiError = require('../utils/api-error');
 
 const NotificationService = {
   sendNotification: async (id) => {
@@ -16,19 +17,13 @@ const NotificationService = {
     ).populate('user');
 
     if (!notification) {
-      const error = new Error(__('Cannot find notification'));
-      error.statusCode = 422;
-      error.data = { id };
-      throw error;
+      throw new ApiError(__('Cannot find notification'), 422, { id });
     }
 
     const user = notification.user;
 
     if (!user) {
-      const error = new Error(__('Cannot find notification user'));
-      error.statusCode = 422;
-      error.data = notification;
-      throw error;
+      throw new ApiError(__('Cannot find notification user'), 422, user);
     }
 
     webpush.setVapidDetails(
