@@ -37,7 +37,7 @@ router.post(
           .isEmpty()
           .withMessage(__('scheduledAt field shound be empty')),
         check('scheduledAt')
-          .isDate()
+          .isISO8601()
           .withMessage(__('scheduledAt field shound be a valid date')),
       ],
       __(
