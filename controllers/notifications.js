@@ -26,7 +26,7 @@ const postNotification = asyncMiddleware(async (req, res, next) => {
     tag,
     renotify = true,
     actions = [], // [{ action: "confirm", title: "OK", icon: "https://..." }]
-    data = [],
+    data = {},
   } = req.body;
 
   const scheduledAt = req.body.scheduledAt || new Date();

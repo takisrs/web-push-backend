@@ -11,6 +11,7 @@ const ApiError = require('../utils/api-error');
 
 const NotificationService = {
   sendNotification: async (id) => {
+    logger.debug(`[NOTIFICATION] Sending notification ${id}`);
     const notification = await Notification.findOneAndUpdate(
       { _id: id },
       { status: 'IN_PROGRESS' }
@@ -57,11 +58,16 @@ const NotificationService = {
             notification,
             response: notificationResult,
           });
-          const result = await log.save();
-          console.log(result);
+          await log.save();
         }
       } catch (error) {
-        logger.debug(error);
+        logger.debug(`[NOTIFICATION] ${error}`);
+        const log = new Log({
+          subscription,
+          notification,
+          response: error,
+        });
+        await log.save();
       }
     }
 

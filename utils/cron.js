@@ -8,7 +8,7 @@ const ApiError = require('./api-error');
 
 const setupCron = () => {
   cron.schedule('*/10 * * * * *', async () => {
-    logger.debug('running the task to send notifications');
+    logger.debug('[NOTIFICATION] running the task to send notifications');
 
     const notifications = await Notification.findPending();
 

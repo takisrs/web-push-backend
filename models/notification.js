@@ -47,7 +47,7 @@ const notificationSchema = new mongoose.Schema({
     type: Array,
   },
   data: {
-    type: Array,
+    type: Object,
   },
   scheduledAt: {
     type: Date,
