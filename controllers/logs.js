@@ -9,7 +9,7 @@ const getLogs = asyncMiddleware(async (req, res) => {
   let filter = {};
   if (user) filter = { 'subscription.user': user._id };
 
-  const logs = await Log.find(filter);
+  const logs = await Log.find(filter).sort({ added: -1 });
 
   if (logs && logs.length > 0) {
     res.status(201).json({
