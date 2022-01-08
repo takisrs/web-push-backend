@@ -6,7 +6,7 @@ const Subscription = require('../models/subscription');
 const Log = require('../models/log');
 const config = require('../config/config');
 const logger = require('../utils/logger');
-const sendEmail = require('../utils/sendEmail');
+const sendEmail = require('../utils/email');
 const ApiError = require('../utils/api-error');
 
 const NotificationService = {
