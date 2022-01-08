@@ -11,6 +11,56 @@ const config = require('../config/config');
 const ApiError = require('../utils/api-error');
 const asyncMiddleware = require('../middleware/async');
 
+const putNotification = asyncMiddleware(async (req, res) => {
+  const errors = validationResult(req);
+  const { id } = req.params;
+
+  const {
+    title,
+    message,
+    icon,
+    image,
+    badge,
+    vibrate,
+    status,
+    data,
+    scheduledAt,
+  } = req.body;
+
+  const user = req.user._id.toString();
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
+  }
+
+  const notification = await Notification.findOneAndUpdate(
+    { _id: id, user: user },
+    {
+      title,
+      message,
+      icon,
+      image,
+      badge,
+      vibrate,
+      status,
+      data,
+      scheduledAt,
+    }
+  );
+
+  if (notification) {
+    res.status(201).json({
+      ok: true,
+      message: __('Notification updated successfully!'),
+      data: notification,
+    });
+  } else {
+    throw new ApiError(__('Failed to update notification!'), 500);
+  }
+});
+
 const postNotification = asyncMiddleware(async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -204,6 +254,32 @@ const getNotifications = asyncMiddleware(async (req, res) => {
   }
 });
 
+const getNotification = asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
+  }
+
+  const notification = await Notification.findById(id);
+
+  if (notification) {
+    return res.status(201).json({
+      ok: true,
+      message: __('Notification %s was retrieved successfully', id),
+      data: {
+        notification,
+      },
+    });
+  } else {
+    throw new ApiError(__('No notification with id %s', id, 404));
+  }
+});
+
 const deleteNotification = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
 
@@ -261,7 +337,7 @@ const copyNotification = asyncMiddleware(async (req, res) => {
         duplicatedNotification._id.toString()
       ),
       data: {
-        duplicatedNotification,
+        notification: duplicatedNotification,
       },
     });
   } else {
@@ -271,8 +347,10 @@ const copyNotification = asyncMiddleware(async (req, res) => {
 
 module.exports = {
   postNotification,
+  putNotification,
   sendNotification,
   getNotifications,
+  getNotification,
   deleteNotification,
   copyNotification,
 };

@@ -10,6 +10,20 @@ const router = express.Router();
 
 router.get('/', isAuth, notificationsController.getNotifications);
 
+router.get(
+  '/:id',
+  [check('id').custom(isValidMongoId)],
+  isAuth,
+  notificationsController.getNotification
+);
+
+router.put(
+  '/:id',
+  [check('id').custom(isValidMongoId)],
+  isAuth,
+  notificationsController.putNotification
+);
+
 router.delete(
   '/:id',
   isAuth,

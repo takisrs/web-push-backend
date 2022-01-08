@@ -39,5 +39,8 @@
 	"Notification %s delete successfully!": "Notification %s delete successfully!",
 	"No notification with id %s": "No notification with id %s",
 	"Notification %s was deleted successfully!": "Notification %s was deleted successfully!",
-	"Notification %s was copied successfully. The id of the new notification is %s!": "Notification %s was copied successfully. The id of the new notification is %s!"
+	"Notification %s was copied successfully. The id of the new notification is %s!": "Notification %s was copied successfully. The id of the new notification is %s!",
+	"Notification %s was retrieved successfully": "Notification %s was retrieved successfully",
+	"Notification failed to update!": "Notification failed to update!",
+	"Notification updated successfully!": "Notification updated successfully!"
 }
