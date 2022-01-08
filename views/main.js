@@ -2,10 +2,11 @@
 const API_ENDPOINT = 'http://{HOST}/subscriptions';
 const VAPID_PUBLIC_KEY = '{PUBLIC_VAPID_KEY}';
 const USER_ID = '{USER_ID}';
+const SHOW_WELCOME_NOTIFICATION = true;
 
 /**
  * Converts a base64 string to a Uint8Array
- * @param {string} base64String a public vapid key
+ * @param {string} base64String - A public vapid key
  * @returns {Uint8Array}
  */
 function urlBase64ToUint8Array(base64String) {
@@ -22,11 +23,7 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 const showNotification = () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      console.log(registration);
-    });
-
+  if (SHOW_WELCOME_NOTIFICATION && 'serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((swReg) => {
       swReg.showNotification('Notification from Service Worker', {
         body: 'Welcome to our Notification Service',
@@ -38,6 +35,9 @@ const showNotification = () => {
         badge: '/images/icon.png',
         tag: 'welcome-notification',
         renotify: true,
+        data: {
+          url: 'https://github.com/takisrs',
+        },
         actions: [
           {
             action: 'confirm',
@@ -52,13 +52,15 @@ const showNotification = () => {
         ],
       });
     });
-  } else {
-    new Notification('Notification', {
-      body: 'Welcome to our Notification Service',
-    });
   }
 };
 
+/**
+ * Store a push subscription to backend
+ * @param {object} subscription - Subscription object
+ * @param {Function} cb - Callback function to run on success
+ * @returns void
+ */
 const storeSubscription = (subscription, cb) => {
   fetch(API_ENDPOINT, {
     method: 'post',
@@ -71,13 +73,16 @@ const storeSubscription = (subscription, cb) => {
     }),
   })
     .then((response) => {
-      if (response.ok) cb();
+      if (response.ok && cb) cb();
     })
     .catch((error) => {
       console.log(error);
     });
 };
 
+/**
+ * Subscribe the user to the push notification service
+ */
 const makeSubscription = async () => {
   if ('serviceWorker' in navigator) {
     const swRegistration = await navigator.serviceWorker.ready;
@@ -92,7 +97,6 @@ const makeSubscription = async () => {
       });
 
       if (newSubscription) {
-        console.log(newSubscription);
         storeSubscription(newSubscription, showNotification);
       }
     }

@@ -39,32 +39,40 @@ self.addEventListener('notificationclose', (_event) => {
 self.addEventListener('push', (event) => {
   console.log('push notification received', event);
 
-  let data = { title: 'Notification', message: 'Hello!' };
   if (event.data) {
-    data = JSON.parse(event.data.text());
+    const notificationData = JSON.parse(event.data.text());
+    const {
+      message,
+      icon,
+      image,
+      dir,
+      lang,
+      vibrate,
+      silent,
+      badge,
+      tag,
+      renotify,
+      actions,
+      data,
+    } = notificationData;
+
+    const notificationConfig = {
+      body: message,
+      icon,
+      image,
+      dir,
+      lang,
+      vibrate,
+      silent,
+      badge,
+      tag,
+      renotify,
+      actions,
+      data,
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title, notificationConfig)
+    );
   }
-
-  const notificationConfig = {
-    body: data.message,
-    icon: data.icon,
-    image: data.image,
-    dir: data.dir,
-    lang: data.lang,
-    vibrate: data.vibrate,
-    silent: data.silent,
-    badge: data.badge,
-    tag: data.tag,
-    renotify: data.renotify,
-    actions: data.actions,
-    data: {},
-  };
-
-  const extraData = data.data;
-  if (extraData.url !== undefined) {
-    notificationConfig.data.url = extraData.url;
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(data.title, notificationConfig)
-  );
 });
