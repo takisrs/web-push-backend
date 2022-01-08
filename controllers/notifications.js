@@ -26,6 +26,7 @@ const postNotification = asyncMiddleware(async (req, res, next) => {
     silent = false, // when true, don't use vibrate option (throws a TypeError)
     tag,
     renotify = true,
+    status = 'PENDING',
     actions = [], // [{ action: "confirm", title: "OK", icon: "https://..." }]
     data = {},
   } = req.body;
@@ -52,6 +53,7 @@ const postNotification = asyncMiddleware(async (req, res, next) => {
     badge,
     tag,
     renotify,
+    status,
     actions,
     data,
     scheduledAt,
