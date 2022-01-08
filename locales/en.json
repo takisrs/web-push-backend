@@ -38,5 +38,6 @@
 	"Could not upload the file": "Could not upload the file",
 	"Notification %s delete successfully!": "Notification %s delete successfully!",
 	"No notification with id %s": "No notification with id %s",
-	"Notification %s was deleted successfully!": "Notification %s was deleted successfully!"
+	"Notification %s was deleted successfully!": "Notification %s was deleted successfully!",
+	"Notification %s was copied successfully. The id of the new notification is %s!": "Notification %s was copied successfully. The id of the new notification is %s!"
 }

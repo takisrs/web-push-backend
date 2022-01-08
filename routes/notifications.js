@@ -17,6 +17,13 @@ router.delete(
   notificationsController.deleteNotification
 );
 
+router.copy(
+  '/:id',
+  isAuth,
+  [check('id').custom(isValidMongoId)],
+  notificationsController.copyNotification
+);
+
 router.post(
   '/',
   isAuth,

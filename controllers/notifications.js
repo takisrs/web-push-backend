@@ -1,6 +1,7 @@
 const webpush = require('web-push');
 const { validationResult } = require('express-validator');
 const { __ } = require('i18n');
+const mongoose = require('mongoose');
 
 const Subscription = require('../models/subscription');
 const Notification = require('../models/notification');
@@ -227,9 +228,49 @@ const deleteNotification = asyncMiddleware(async (req, res) => {
   }
 });
 
+const copyNotification = asyncMiddleware(async (req, res) => {
+  const { id } = req.params;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
+  }
+
+  const notification = await Notification.findById(id); // TODO: Check user id
+
+  notification.isNew = true;
+  notification._id = mongoose.Types.ObjectId();
+  notification.status = 'DRAFT';
+  notification.sentAt = null;
+  notification.addedAt = new Date();
+  notification.scheduledAt = new Date();
+
+  const duplicatedNotification = await notification.save();
+
+  if (duplicatedNotification) {
+    return res.status(201).json({
+      ok: true,
+      message: __(
+        'Notification %s was copied successfully. The id of the new notification is %s!',
+        id,
+        duplicatedNotification._id.toString()
+      ),
+      data: {
+        duplicatedNotification,
+      },
+    });
+  } else {
+    throw new ApiError(__('No notification with id %s', id, 404));
+  }
+});
+
 module.exports = {
   postNotification,
   sendNotification,
   getNotifications,
   deleteNotification,
+  copyNotification,
 };
