@@ -42,5 +42,6 @@
 	"Notification %s was copied successfully. The id of the new notification is %s!": "Notification %s was copied successfully. The id of the new notification is %s!",
 	"Notification %s was retrieved successfully": "Notification %s was retrieved successfully",
 	"Notification failed to update!": "Notification failed to update!",
-	"Notification updated successfully!": "Notification updated successfully!"
+	"Notification updated successfully!": "Notification updated successfully!",
+	"Main script code retrieved": "Main script code retrieved"
 }
