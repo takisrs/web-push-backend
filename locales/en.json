@@ -43,5 +43,6 @@
 	"Notification %s was retrieved successfully": "Notification %s was retrieved successfully",
 	"Notification failed to update!": "Notification failed to update!",
 	"Notification updated successfully!": "Notification updated successfully!",
-	"Main script code retrieved": "Main script code retrieved"
+	"Main script code retrieved": "Main script code retrieved",
+	"Subscription already in use": "Subscription already in use"
 }

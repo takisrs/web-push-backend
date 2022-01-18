@@ -1,4 +1,5 @@
 const { __ } = require('i18n');
+const { validationResult } = require('express-validator');
 
 const Subscription = require('../models/subscription');
 const User = require('../models/user');
@@ -43,11 +44,18 @@ const getSubscriptions = asyncMiddleware(async (req, res) => {
 
 const postSubscription = asyncMiddleware(async (req, res, next) => {
   const { userId, subscription } = req.body;
+  const errors = validationResult(req);
 
   const user = await User.findById(userId);
 
   if (!user) {
     throw new ApiError(__('user not found'), 400, { id: userId });
+  }
+
+  if (!errors.isEmpty()) {
+    throw new ApiError(__('Validation error occured'), 422, {
+      errors: errors.array(),
+    });
   }
 
   const subscriptionObj = new Subscription({

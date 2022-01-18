@@ -26,4 +26,8 @@ const subscriptionSchema = new mongoose.Schema({
   },
 });
 
+subscriptionSchema.statics.endpointExists = function (endpoint, cp) {
+  this.countDocuments({ endpoint }).exec(cp);
+};
+
 module.exports = mongoose.model('Subscription', subscriptionSchema);
