@@ -23,7 +23,7 @@ router.post(
               reject(new Error(__('Server Error')));
             }
             if (count > 0) {
-              reject(new Error(__('Subscription already in use')));
+              reject(new Error(__('Subscription already exists')));
             }
             resolve(true);
           });
