@@ -256,6 +256,7 @@ const getNotifications = asyncMiddleware(async (req, res) => {
 
 const getNotification = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
+  const { user } = req;
 
   const errors = validationResult(req);
 
@@ -265,7 +266,10 @@ const getNotification = asyncMiddleware(async (req, res) => {
     });
   }
 
-  const notification = await Notification.findById(id);
+  const notification = await Notification.findOne({
+    _id: id,
+    user: user._id.toString(),
+  });
 
   if (notification) {
     return res.status(201).json({
@@ -276,12 +280,13 @@ const getNotification = asyncMiddleware(async (req, res) => {
       },
     });
   } else {
-    throw new ApiError(__('No notification with id %s', id, 404));
+    throw new ApiError(__('No notification with id %s', id), 404);
   }
 });
 
 const deleteNotification = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
+  const { user } = req;
 
   const errors = validationResult(req);
 
@@ -291,7 +296,10 @@ const deleteNotification = asyncMiddleware(async (req, res) => {
     });
   }
 
-  const notification = await Notification.findByIdAndDelete(id); // TODO: Check user id
+  const notification = await Notification.findOneAndDelete({
+    _id: id,
+    user: user._id.toString(),
+  });
 
   if (notification) {
     return res.status(201).json({
@@ -302,12 +310,13 @@ const deleteNotification = asyncMiddleware(async (req, res) => {
       },
     });
   } else {
-    throw new ApiError(__('No notification with id %s', id, 404));
+    throw new ApiError(__('No notification with id %s', id), 404);
   }
 });
 
 const copyNotification = asyncMiddleware(async (req, res) => {
   const { id } = req.params;
+  const { user } = req;
 
   const errors = validationResult(req);
 
@@ -317,8 +326,14 @@ const copyNotification = asyncMiddleware(async (req, res) => {
     });
   }
 
-  const notification = await Notification.findById(id); // TODO: Check user id
+  const notification = await Notification.findOne({
+    _id: id,
+    user: user._id.toString(),
+  });
 
+  if (!notification) {
+    throw new ApiError(__('Notification not found'), 404);
+  }
   notification.isNew = true;
   notification._id = mongoose.Types.ObjectId();
   notification.status = 'DRAFT';
