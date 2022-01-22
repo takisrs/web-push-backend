@@ -8,7 +8,7 @@ const postImage = asyncMiddleware(async (req, res) => {
   try {
     await uploadFile(req, res);
 
-    if (req.file == undefined) {
+    if (req.file === undefined) {
       throw new ApiError(__('Please upload a file!'), 400);
     }
 
@@ -21,7 +21,7 @@ const postImage = asyncMiddleware(async (req, res) => {
       },
     });
   } catch (err) {
-    throw new ApiError(__('Could not upload the file'), 500);
+    throw new ApiError(__('Could not upload the file'), 500, { err });
   }
 });
 
