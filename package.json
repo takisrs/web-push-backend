@@ -29,7 +29,7 @@
     "multer": "^1.4.4",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.7.2",
-    "terser": "^5.10.0",
+    "terser": "^5.14.2",
     "web-push": "^3.4.5",
     "winston": "^3.3.3"
   },
